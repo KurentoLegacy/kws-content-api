@@ -1,39 +1,61 @@
 $(function(event)
 {
   var btnConnect = $('#btnConnect');
+  var btnTerminate = $('#btnTerminate');
+  var txtUri = $('#txtUri');
 
-  btnConnect.on('click', function(event)
+
+  /**
+   * Set and enable the terminate button
+   *
+   * @param {WebRtcContent} conn: WebRTC streamming connection
+   */
+  function setTerminate(conn)
   {
-    // Create a new connection
-    var conn = new WebRtcContent('http://localhost:8000/video.mpg');
-
-    // Set connection success and error events
-    conn.onsuccess = function(event)
-    {
-      var stream = event.stream;
-
-      $('#video').attr('src', stream);
-    }
-    conn.onerror = function(event)
-    {
-      console.error(event);
-    }
-
     // Enable and init button to terminate the connection
-    var btnTerminate = $('#btnTerminate');
-
     btnTerminate.one('click', function(event)
     {
+      // Disable terminate button
+      btnTerminate.attr('disabled', true);
+
       // Terminate the connection
       conn.terminate();
 
-      // Swap enabled buttons (enable connect)
-      btnTerminate.attr('disabled', true);
+      // Enable connect button
       btnConnect.attr('disabled', false);
+      txtUri.attr('disabled', false);
     })
+  }
 
-    // Swap enabled buttons (enable terminate)
+
+  btnConnect.on('click', function(event)
+  {
+    // Disable connect button
     btnConnect.attr('disabled', true);
-    btnTerminate.attr('disabled', false);
+    txtUri.attr('disabled', true);
+
+    // Create a new connection
+    var conn = new WebRtcContent(txtUri.val());
+
+    // Set and enable the terminate button
+    setTerminate(conn);
+
+    // Set connection success and error events
+    conn.onerror = function(event)
+    {
+      // Notify to the user of the error
+      alert(event.error);
+
+      // Enable connect button
+      btnConnect.attr('disabled', false);
+    }
+    conn.onsuccess = function(event)
+    {
+      // Set the incoming stream on the video tag
+      $('#video').attr('src', event.stream);
+
+      // Enable terminate button
+      btnTerminate.attr('disabled', false);
+    }
   })
 })
