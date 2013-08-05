@@ -1,6 +1,6 @@
 /**
  * @class WebRtcContent
- * 
+ *
  * @param {String} ws_uri: URI of the server WebSocket endpoint. Alternatively,
  *   it can be used a WebSocket or DataChannel object.
  * @param {Object} options: configuration options
@@ -12,15 +12,6 @@
 function WebRtcContent(url)
 {
   var self = this;
-
-
-  var getUserMedia = navigator.getUserMedia
-                  || navigator.mozGetUserMedia
-                  || navigator.webkitGetUserMedia;
-
-  var RTCPeerConnection = navigator.RTCPeerConnection
-                       || navigator.mozRTCPeerConnection
-                       || webkitRTCPeerConnection;
 
 
   $.jsonRPC.setup({url: url});
@@ -52,13 +43,11 @@ function WebRtcContent(url)
 
   pc.createOffer(function(offer)
   {
-    console.log(offer);
-
     // Set the peer local description
     pc.setLocalDescription(offer,
     function()
     {
-      console.info("setLocalDescription = success")
+      console.info("LocalDescription correctly set")
     },
     onerror);
   },
@@ -174,7 +163,7 @@ function WebRtcContent(url)
 
   /**
    * Start a new media communication
-   * 
+   *
    * @param {String} mediaId: identifier of the media communication
    * @param {Object} options: configuration options
    *   {Enum(null, 'send', 'recv', 'sendrecv')} audio: audio stream mode
