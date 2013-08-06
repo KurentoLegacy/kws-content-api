@@ -3,24 +3,26 @@
  *
  * @param {String} ws_uri: URI of the server WebSocket endpoint. Alternatively,
  *   it can be used a WebSocket or DataChannel object.
- * @param {Object} options: configuration options
- *   {String} username: authentication username.
- *   {String} password: authentication password.
- *   {Object} listeners: listeners for the desired events.
- * @param {Function(Error, WebRtcContent)} callback: continuation function
  */
 function WebRtcContent(url)
 {
   var self = this;
 
 
-  $.jsonRPC.setup({url: url});
+  $.jsonRPC.setup({endPoint: url});
 
   var sessionId = null;
 
   var pc = new RTCPeerConnection(
   {
     iceServers: [{url: 'stun:'+'stun.l.google.com:19302'}]
+  });
+
+  pc.addEventListener('signalingState', function(event)
+  {
+    if(pc.signalingState == "close"
+    && self.onclose)
+       self.onclose(new Event('close'));
   });
 
 
@@ -47,12 +49,12 @@ function WebRtcContent(url)
     pc.setLocalDescription(offer,
     function()
     {
-      console.info("LocalDescription correctly set")
+      console.info("LocalDescription correctly set");
     },
     onerror);
   },
   onerror,
-  mediaConstraints)
+  mediaConstraints);
 
   pc.onicecandidate = function(event)
   {
@@ -64,8 +66,10 @@ function WebRtcContent(url)
       sdp: pc.localDescription.sdp
     };
 
-    function success(result)
+    function success(response)
     {
+      var result = response.result;
+
       sessionId = result.sessionId;
 
       pc.setRemoteDescription(
@@ -75,17 +79,26 @@ function WebRtcContent(url)
       },
       function()
       {
+        // Init MediaEvents polling
+        pollMediaEvents();
+
+        // Notify to the user about the new stream
         if(self.onsuccess)
         {
           var streams = pc.getRemoteStreams();
 
           if(streams)
-            self.onsuccess(stream[0]);
+          {
+            var event = new Event('open');
+                event.stream = stream[0];
+
+            self.onsuccess(event);
+          }
           else
             onerror(new Error("No streams are available"));
         }
       },
-      onerror)
+      onerror);
     }
 
     $.jsonRPC.request('start',
@@ -94,7 +107,7 @@ function WebRtcContent(url)
       success: success,
       error:   onerror
     });
-  }
+  };
 
 
   // Terminate
@@ -112,23 +125,20 @@ function WebRtcContent(url)
       {
         console.info("Connection terminated");
       },
-      error: function(result)
-      {
-        console.error("Error terminating the connection");
-      }
+      error: onerror
     });
-  }
+  };
 
 
   // Pool
 
   /**
    * Pool for events dispatched on the server pipeline
-   *
-   * @param {Function(Error, result)} callback: function to process the events
    */
-  this.poll = function(callback)
+  function pollMediaEvents()
   {
+    // var timeout = 5*1000;  // Request events each 5 seconds
+
     var params =
     {
       sessionId: sessionId
@@ -139,16 +149,25 @@ function WebRtcContent(url)
       params: params,
       success: function(result)
       {
-        callback(null, result.events);
+        for(var i=0, data; data=result.events[i]; i++)
+          if(self.onMediaEvent)
+          {
+            var event = new Event('open');
+                event.data = data;
+
+            self.onMediaEvent(event);
+          }
+
+       // setTimeout(pollMediaEvents, timeout);
       },
-      error: function(result)
+      error: function(event)
       {
-        callback(result.error);
+        onerror(event);
+
+        // setTimeout(pollMediaEvents, timeout);
       }
     });
   }
-
-
 
 
 
@@ -233,33 +252,7 @@ function WebRtcContent(url)
     /**
      * Send an offer with the current and new streams and constraints
      */
-/*    function sendOffer()
-    {
-      var mediaConstraints =
-      {
-        'mandatory':
-        {
-          'OfferToReceiveAudio': audio.remote,
-          'OfferToReceiveVideo': video.remote
-        }
-      };
-
-      pc.createOffer(function(offer)
-      {
-        console.log(offer);
-
-        // Set the peer local description
-        pc.setLocalDescription(offer,
-        function()
-        {
-          nsss.call('offer', peerUID, offer.sdp, onerror);
-        },
-        onerror);
-      },
-      onerror,
-      mediaConstraints)
-    }
-
+/*
     // Mode set to send local audio and/or video stream
     if(audio.local || video.local)
       navigator.getUserMedia({'audio': audio.local, 'video': video.local},

@@ -24,7 +24,7 @@ $(function(event)
       // Enable connect button
       btnConnect.attr('disabled', false);
       txtUri.attr('disabled', false);
-    })
+    });
   }
 
 
@@ -41,21 +41,27 @@ $(function(event)
     setTerminate(conn);
 
     // Set connection success and error events
-    conn.onerror = function(event)
-    {
-      // Notify to the user of the error
-      alert(event.error);
-
-      // Enable connect button
-      btnConnect.attr('disabled', false);
-    }
-    conn.onsuccess = function(event)
+    conn.onopen = function(event)
     {
       // Set the incoming stream on the video tag
       $('#video').attr('src', event.stream);
 
       // Enable terminate button
       btnTerminate.attr('disabled', false);
-    }
-  })
-})
+    };
+    conn.onclose = function(event)
+    {
+      alert("Connection clossed");
+    };
+
+    conn.onerror = function(event)
+    {
+      // Notify to the user of the error
+      alert(event.error);
+      console.error(event);
+
+      // Enable connect button
+      btnConnect.attr('disabled', false);
+    };
+  });
+});
