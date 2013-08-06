@@ -12,12 +12,22 @@ $(function(event)
     // Sanitize the input
     msg = msg.replace(/</g, '&lt;');
 
-    msg = '<span style="color: #FF0000; padding-left: 15px">'+msg+'</span>';
+    msg = '<span style="color: #FF0000">'+msg+'</span>';
 
     divLog.html(divLog.html() + msg + '<br>');
   }
 
   function info(msg)
+  {
+    // Sanitize the input
+    msg = msg.replace(/</g, '&lt;');
+
+    msg = '<span style="color: #0000FF">'+msg+'</span>';
+
+    divLog.html(divLog.html() + msg + '<br>');
+  }
+
+  function log(msg)
   {
     // Sanitize the input
     msg = msg.replace(/</g, '&lt;');
@@ -42,7 +52,7 @@ $(function(event)
       // Terminate the connection
       conn.terminate();
 
-      info("Connection terminated by user");
+      log("Connection terminated by user");
 
       // Enable connect button
       btnConnect.attr('disabled', false);
@@ -61,7 +71,7 @@ $(function(event)
     var uri = txtUri.val();
     var conn = new WebRtcContent(uri);
 
-    info("Connection created pointing to '"+uri+"'");
+    log("Connection created pointing to '"+uri+"'");
 
     // Set and enable the terminate button
     setTerminate(conn);
@@ -69,7 +79,7 @@ $(function(event)
     // Set connection success and error events
     conn.onopen = function(event)
     {
-      info("Connection openned");
+      log("Connection openned");
 
       // Set the incoming stream on the video tag
       video.attr('src', event.stream);
@@ -79,8 +89,13 @@ $(function(event)
     };
     conn.onclose = function(event)
     {
-      info("Connection clossed");
+      log("Connection clossed");
     };
+
+    conn.onMediaEvent = function(event)
+    {
+      info("MediaEvent: "+event.data)
+    }
 
     conn.onerror = function(event)
     {

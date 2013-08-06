@@ -152,7 +152,7 @@ function WebRtcContent(url)
         for(var i=0, data; data=result.events[i]; i++)
           if(self.onMediaEvent)
           {
-            var event = new Event('open');
+            var event = new Event('MediaEvent');
                 event.data = data;
 
             self.onMediaEvent(event);
