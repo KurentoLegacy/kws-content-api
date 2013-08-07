@@ -12,6 +12,7 @@ function WebRtcContent(url)
   $.jsonRPC.setup({endPoint: url});
 
   var sessionId = null;
+  var pollingTimeout = null;
 
   var pc = new RTCPeerConnection(
   {
@@ -72,11 +73,11 @@ function WebRtcContent(url)
 
       sessionId = result.sessionId;
 
-      pc.setRemoteDescription(
+      pc.setRemoteDescription(new RTCSessionDescription(
       {
         type: 'answer',
         sdp: result.sdp
-      },
+      }),
       function()
       {
         // Init MediaEvents polling
@@ -123,6 +124,9 @@ function WebRtcContent(url)
       params: params,
       success: function(result)
       {
+        // Stop polling
+        clearTimeout(pollingTimeout);
+
         console.info("Connection terminated");
       },
       error: onerror
@@ -137,7 +141,7 @@ function WebRtcContent(url)
    */
   function pollMediaEvents()
   {
-    // var timeout = 5*1000;  // Request events each 5 seconds
+    var timeout = 5*1000;  // Request events each 5 seconds
 
     var params =
     {
@@ -149,22 +153,23 @@ function WebRtcContent(url)
       params: params,
       success: function(result)
       {
-        for(var i=0, data; data=result.events[i]; i++)
-          if(self.onMediaEvent)
-          {
-            var event = new Event('MediaEvent');
-                event.data = data;
+        if(result.events)
+          for(var i=0, data; data=result.events[i]; i++)
+            if(self.onMediaEvent)
+            {
+              var event = new Event('MediaEvent');
+                  event.data = data;
 
-            self.onMediaEvent(event);
-          }
+              self.onMediaEvent(event);
+            }
 
-       // setTimeout(pollMediaEvents, timeout);
+        pollingTimeout = setTimeout(pollMediaEvents, timeout);
       },
       error: function(event)
       {
         onerror(event);
 
-        // setTimeout(pollMediaEvents, timeout);
+        pollingTimeout = setTimeout(pollMediaEvents, timeout);
       }
     });
   }
