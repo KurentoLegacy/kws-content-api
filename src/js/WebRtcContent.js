@@ -89,16 +89,16 @@ function WebRtcContent(url)
         pollMediaEvents();
 
         // Notify to the user about the new stream
-        if(self.onsuccess)
+        if(self.onopen)
         {
           var streams = pc.getRemoteStreams();
 
           if(streams)
           {
             var event = new Event('open');
-                event.stream = stream[0];
+                event.stream = streams[0];
 
-            self.onsuccess(event);
+            self.onopen(event);
           }
           else
             onerror(new Error("No streams are available"));
