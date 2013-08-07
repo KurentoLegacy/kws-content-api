@@ -31,12 +31,12 @@ function WebRtcContent(url)
   {
     if(self.onerror)
        self.onerror(error);
-  }
+  };
 
   function onerror_jsonrpc(event)
   {
-    onerror(new Error(event.error));
-  }
+    onerror(event.error);
+  };
 
 
   // Start
@@ -119,6 +119,10 @@ function WebRtcContent(url)
   // Terminate
   this.terminate = function()
   {
+    // Stop polling
+    clearTimeout(pollingTimeout);
+    pollingTimeout = 'stopped';
+
     var params =
     {
       sessionId: sessionId
@@ -127,12 +131,10 @@ function WebRtcContent(url)
     $.jsonRPC.request('terminate',
     {
       params: params,
-      success: function(result)
+      success: function(response)
       {
-        // Stop polling
-        clearTimeout(pollingTimeout);
-
-        console.info("Connection terminated");
+        if(self.onclose)
+           self.onclose(new Event('close'));
       },
       error: onerror_jsonrpc
     });
@@ -170,13 +172,15 @@ function WebRtcContent(url)
               self.onMediaEvent(event);
             }
 
-        pollingTimeout = setTimeout(pollMediaEvents, timeout);
+        if(pollingTimeout != 'stopped')
+           pollingTimeout = setTimeout(pollMediaEvents, timeout);
       },
       error: function(event)
       {
         onerror_jsonrpc(event);
 
-        pollingTimeout = setTimeout(pollMediaEvents, timeout);
+        if(pollingTimeout != 'stopped')
+           pollingTimeout = setTimeout(pollMediaEvents, timeout);
       }
     });
   }
