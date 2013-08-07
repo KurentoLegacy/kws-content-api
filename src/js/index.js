@@ -94,14 +94,14 @@ $(function(event)
 
     conn.onMediaEvent = function(event)
     {
-      info("MediaEvent: "+event.data)
+      info("MediaEvent: "+JSON.stringify(event.data))
     }
 
-    conn.onerror = function(error)
+    conn.onerror = function(event)
     {
       // Notify to the user of the error
-      error(error.message);
-      console.error(error);
+      error(event.message);
+      console.error(event);
 
       // Enable connect button
       btnConnect.attr('disabled', false);

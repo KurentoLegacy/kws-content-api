@@ -156,8 +156,10 @@ function WebRtcContent(url)
     $.jsonRPC.request('poll',
     {
       params: params,
-      success: function(result)
+      success: function(response)
       {
+        var result = response.result;
+
         if(result.events)
           for(var i=0, data; data=result.events[i]; i++)
             if(self.onMediaEvent)
