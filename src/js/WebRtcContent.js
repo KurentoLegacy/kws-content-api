@@ -29,8 +29,13 @@ function WebRtcContent(url)
 
   function onerror(error)
   {
-    if(self.onerror && error)
+    if(self.onerror)
        self.onerror(error);
+  }
+
+  function onerror_jsonrpc(event)
+  {
+    onerror(new Error(event.error));
   }
 
 
@@ -106,7 +111,7 @@ function WebRtcContent(url)
     {
       params:  params,
       success: success,
-      error:   onerror
+      error:   onerror_jsonrpc
     });
   };
 
@@ -129,7 +134,7 @@ function WebRtcContent(url)
 
         console.info("Connection terminated");
       },
-      error: onerror
+      error: onerror_jsonrpc
     });
   };
 
@@ -167,7 +172,7 @@ function WebRtcContent(url)
       },
       error: function(event)
       {
-        onerror(event);
+        onerror_jsonrpc(event);
 
         pollingTimeout = setTimeout(pollMediaEvents, timeout);
       }

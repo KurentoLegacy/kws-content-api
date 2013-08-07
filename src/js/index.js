@@ -97,11 +97,11 @@ $(function(event)
       info("MediaEvent: "+event.data)
     }
 
-    conn.onerror = function(event)
+    conn.onerror = function(error)
     {
       // Notify to the user of the error
-      error(event.error);
-      console.error(event);
+      error(error.message);
+      console.error(error);
 
       // Enable connect button
       btnConnect.attr('disabled', false);
