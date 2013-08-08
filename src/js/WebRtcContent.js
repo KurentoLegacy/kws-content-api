@@ -33,9 +33,9 @@ function WebRtcContent(url)
        self.onerror(error);
   };
 
-  function onerror_jsonrpc(event)
+  function onerror_jsonrpc(response)
   {
-    onerror(event.error);
+    onerror(new Error(response.error || response));
   };
 
 

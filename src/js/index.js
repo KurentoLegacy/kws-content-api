@@ -3,7 +3,8 @@ $(function(event)
   var txtUri = $('#txtUri');
   var btnConnect = $('#btnConnect');
   var btnTerminate = $('#btnTerminate');
-  var video = $('#video');
+  var localVideo = $('#localVideo');
+  var remoteVideo = $('#remoteVideo');
   var divLog = $('#divLog');
 
 
@@ -82,7 +83,7 @@ $(function(event)
       log("Connection openned");
 
       // Set the incoming stream on the video tag
-      video.attr('src', event.stream);
+      remoteVideo.attr('src', event.stream);
 
       // Enable terminate button
       btnTerminate.attr('disabled', false);
@@ -99,12 +100,13 @@ $(function(event)
 
     conn.onerror = function(event)
     {
+      // Enable connect button
+      btnConnect.attr('disabled', false);
+      txtUri.attr('disabled', false);
+
       // Notify to the user of the error
       error(event.message);
       console.error(event);
-
-      // Enable connect button
-      btnConnect.attr('disabled', false);
     };
   });
 });
