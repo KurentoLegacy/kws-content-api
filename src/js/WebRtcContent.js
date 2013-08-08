@@ -18,6 +18,19 @@ function WebRtcContent(url, options)
   var pollingTimeout = null;
 
 
+  // Error dispatcher functions
+  function onerror(error)
+  {
+    if(self.onerror)
+       self.onerror(error);
+  };
+
+  function onerror_jsonrpc(response)
+  {
+    onerror(new Error(response.error || response));
+  };
+
+
   // Create the PeerConnection object
   var pc = new RTCPeerConnection(
   {
@@ -33,19 +46,6 @@ function WebRtcContent(url, options)
     && self.onclose)
        self.onclose(new Event('close'));
   });
-
-
-  // Error dispatcher functions
-  function onerror(error)
-  {
-    if(self.onerror)
-       self.onerror(error);
-  };
-
-  function onerror_jsonrpc(response)
-  {
-    onerror(new Error(response.error || response));
-  };
 
 
   // Start
