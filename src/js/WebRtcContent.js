@@ -19,12 +19,23 @@ function WebRtcContent(url, options)
 
 
   // Error dispatcher functions
+
+  /**
+   * Common function to dispatch the error to the user application
+   *
+   * @param {Error} error: error object to be dispatched
+   */
   function onerror(error)
   {
     if(self.onerror)
        self.onerror(error);
   };
 
+  /**
+   * Adaptor from jsonRPC errors to standard Javascript Error objects
+   *
+   * @param response: jsonRPC error object
+   */
   function onerror_jsonrpc(response)
   {
     onerror(new Error(response.error || response));
@@ -37,9 +48,11 @@ function WebRtcContent(url, options)
     iceServers: [{url: 'stun:'+'stun.l.google.com:19302'}]
   });
 
+  // Add the local stream if defined
   if(options.stream)
     pc.addStream(options.stream);
 
+  // Dispatch 'close' event if signaling gets closed
   pc.addEventListener('signalingState', function(event)
   {
     if(pc.signalingState == "close"
@@ -48,7 +61,10 @@ function WebRtcContent(url, options)
   });
 
 
+  // RPC calls
+
   // Start
+
   var mediaConstraints =
   {
     'mandatory':
@@ -81,6 +97,11 @@ function WebRtcContent(url, options)
       sdp: pc.localDescription.sdp
     };
 
+    /**
+     * Callback when connection is succesful
+     *
+     * @param {Object} response: JsonRPC response
+     */
     function success(response)
     {
       var result = response.result;
@@ -125,7 +146,9 @@ function WebRtcContent(url, options)
   };
 
 
-  // Terminate
+  /**
+   * Terminate the connection with the WebRTC media server
+   */
   this.terminate = function()
   {
     // Stop polling
