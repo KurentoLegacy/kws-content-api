@@ -91,7 +91,7 @@ $(function(event)
       log("Connection openned");
 
       // Set the incoming stream on the video tag
-      remoteVideo.attr('src', event.stream);
+      remoteVideo.attr('src', URL.createObjectURL(event.stream));
 
       // Enable terminate button
       btnTerminate.attr('disabled', false);
@@ -115,5 +115,20 @@ $(function(event)
       error(event.message);
       console.error(event);
     };
+  });
+
+  // Camera
+  getUserMedia({'audio': true, 'video': true},
+  function(stream)
+  {
+    console.log('User has granted access to local media.');
+
+    localVideo.attr('src', URL.createObjectURL(stream));
+
+    localStream = stream;
+  },
+  function(error)
+  {
+    console.error(error);
   });
 });
