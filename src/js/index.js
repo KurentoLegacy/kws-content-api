@@ -38,6 +38,16 @@ $(function(event)
 
 
   /**
+   * Disable connect button
+   */
+  function disableInput(value)
+  {
+    btnConnect.attr('disabled', value);
+    txtUri.attr('disabled', value);
+  }
+
+
+  /**
    * Set and enable the terminate button
    *
    * @param {WebRtcContent} conn: WebRTC streamming connection
@@ -56,8 +66,7 @@ $(function(event)
       log("Connection terminated by user");
 
       // Enable connect button
-      btnConnect.attr('disabled', false);
-      txtUri.attr('disabled', false);
+      disableInput(false);
     });
   }
 
@@ -65,8 +74,7 @@ $(function(event)
   btnConnect.on('click', function(event)
   {
     // Disable connect button
-    btnConnect.attr('disabled', true);
-    txtUri.attr('disabled', true);
+    disableInput(true);
 
     // Create a new connection
     var uri = txtUri.val();
@@ -101,8 +109,7 @@ $(function(event)
     conn.onerror = function(event)
     {
       // Enable connect button
-      btnConnect.attr('disabled', false);
-      txtUri.attr('disabled', false);
+      disableInput(false);
 
       // Notify to the user of the error
       error(event.message);
