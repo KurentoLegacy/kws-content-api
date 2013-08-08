@@ -4,20 +4,28 @@
  * @param {String} ws_uri: URI of the server WebSocket endpoint. Alternatively,
  *   it can be used a WebSocket or DataChannel object.
  */
-function WebRtcContent(url)
+function WebRtcContent(url, options)
 {
   var self = this;
 
+
+  // Initialize options and object status
+  options = options || {};
 
   $.jsonRPC.setup({endPoint: url});
 
   var sessionId = null;
   var pollingTimeout = null;
 
+
+  // Create the PeerConnection object
   var pc = new RTCPeerConnection(
   {
     iceServers: [{url: 'stun:'+'stun.l.google.com:19302'}]
   });
+
+  if(options.stream)
+    pc.addStream(options.stream);
 
   pc.addEventListener('signalingState', function(event)
   {
@@ -27,6 +35,7 @@ function WebRtcContent(url)
   });
 
 
+  // Error dispatcher functions
   function onerror(error)
   {
     if(self.onerror)

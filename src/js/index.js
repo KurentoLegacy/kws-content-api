@@ -7,6 +7,8 @@ $(function(event)
   var remoteVideo = $('#remoteVideo');
   var divLog = $('#divLog');
 
+  var localStream = null;
+
 
   function error(msg)
   {
@@ -78,7 +80,7 @@ $(function(event)
 
     // Create a new connection
     var uri = txtUri.val();
-    var conn = new WebRtcContent(uri);
+    var conn = new WebRtcContent(uri, {stream: localStream});
 
     log("Connection created pointing to '"+uri+"'");
 
