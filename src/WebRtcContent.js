@@ -123,7 +123,7 @@ function WebRtcContent(url, options)
         {
           var streams = pc.getRemoteStreams();
 
-          if(streams)
+          if(streams && streams[0])
           {
             var event = new Event('open');
                 event.stream = streams[0];
