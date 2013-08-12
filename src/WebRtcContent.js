@@ -55,7 +55,7 @@ function WebRtcContent(url, options)
   // Dispatch 'close' event if signaling gets closed
   pc.onsignalingstatechange = function(event)
   {
-    if(pc.signalingState == "close"
+    if(pc.signalingState == "closed"
     && self.onclose)
        self.onclose(new Event('close'));
   };
@@ -155,6 +155,7 @@ function WebRtcContent(url, options)
     clearTimeout(pollingTimeout);
     pollingTimeout = 'stopped';
 
+    // Notify to the WebRTC endpoint server
     var params =
     {
       sessionId: sessionId
@@ -163,13 +164,11 @@ function WebRtcContent(url, options)
     $.jsonRPC.request('terminate',
     {
       params: params,
-      success: function(response)
-      {
-        if(self.onclose)
-           self.onclose(new Event('close'));
-      },
-      error: onerror_jsonrpc
+      error:  onerror_jsonrpc
     });
+
+    // Close the PeerConnection
+    pc.close();
   };
 
 
