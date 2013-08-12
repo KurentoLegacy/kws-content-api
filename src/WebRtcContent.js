@@ -53,12 +53,12 @@ function WebRtcContent(url, options)
     pc.addStream(options.stream);
 
   // Dispatch 'close' event if signaling gets closed
-  pc.addEventListener('signalingState', function(event)
+  pc.onsignalingstatechange = function(event)
   {
     if(pc.signalingState == "close"
     && self.onclose)
        self.onclose(new Event('close'));
-  });
+  };
 
 
   // RPC calls
