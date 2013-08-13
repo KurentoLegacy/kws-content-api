@@ -1,8 +1,10 @@
 /**
  * @class WebRtcContent
  *
- * @param {String} ws_uri: URI of the server WebSocket endpoint. Alternatively,
- *   it can be used a WebSocket or DataChannel object.
+ * @param {String} url: URL of the WebRTC endpoint server.
+ * @param {Object} options: optional configurations
+ *   {Enum('none', 'send', 'recv', 'sendrecv')} audio: audio stream mode
+ *   {Enum('none', 'send', 'recv', 'sendrecv')} video: video stream mode
  */
 function WebRtcContent(url, options)
 {
@@ -11,6 +13,58 @@ function WebRtcContent(url, options)
 
   // Initialize options and object status
   options = options || {};
+
+  /**
+   * Decode the mode of the streams
+   *
+   * @param {String} type: name of the constraints to decode (only for debug)
+   * @param {String} mode: constraints to decode
+   */
+  function decodeMode(type, mode)
+  {
+    var result = {};
+
+    switch(mode)
+    {
+      case undefined:  // If not defined, set send & receive by default
+      case null:
+      case 'sendrecv':
+        result.local  = true;
+        result.remote = true;
+      break;
+
+      case 'send':
+        result.local  = true;
+        result.remote = false;
+      break;
+
+      case 'recv':
+        result.local  = false;
+        result.remote = true;
+      break;
+
+      case 'none':
+        result.local  = false;
+        result.remote = false;
+      break;
+
+      default:
+        throw new RangeError("Invalid "+type+" media mode");
+    }
+
+    return result;
+  }
+
+  // We can't disable both audio and video on a stream, raise error
+  if(options.audio == 'none' && options.video == 'none')
+    throw new RangeError("At least one audio or video must to be enabled");
+
+  // Audio media
+  var audio = decodeMode("audio", options.audio);
+
+  // Video media
+  var video = decodeMode("video", options.video);
+
 
   $.jsonRPC.setup({endPoint: url});
 
@@ -231,71 +285,12 @@ function WebRtcContent(url, options)
    * Start a new media communication
    *
    * @param {String} mediaId: identifier of the media communication
-   * @param {Object} options: configuration options
-   *   {Enum(null, 'send', 'recv', 'sendrecv')} audio: audio stream mode
-   *   {Enum(null, 'send', 'recv', 'sendrecv')} video: video stream mode
    * @param {Function(Error, Media)} callback: continuation function
    */
 /*  this.startMedia = function(mediaId, options, callback)
   {
-    // Adjust arguments if options is not defined
-    if(typeof options == 'function')
-    {
-      callback = options;
-      options = undefined;
-    }
-
-    options = options || {};
-
-    // We can't disable both audio and video on a stream, raise error
-    if(options.audio == null
-    && options.video == null)
-    {
-      callback(new Error("No audio or video medias are defined"));
-      return
-    }
 */
-    /**
-     * Decode the mode of the streams
-     */
-/*    function decodeMode(type, mode)
-    {
-      var result = {};
 
-      switch(mode)
-      {
-        case undefined:  // If not defined, set send & receive by default
-        case 'sendrecv':
-          result.local = true;
-          result.remote = true;
-        break;
-
-        case 'send':
-          result.local = true;
-          result.remote = false;
-        break;
-
-        case 'recv':
-          result.local = false;
-          result.remote = true;
-        break;
-
-        default:
-          callback(new Error("Invalid "+type+" media mode"));
-          return
-      }
-
-      return result;
-    }
-
-    // Audio media
-    var audio = decodeMode("audio", options.audio);
-    if(!audio) return;
-
-    // Video media
-    var video = decodeMode("video", options.video);
-    if(!video) return;
-*/
     /**
      * Send an offer with the current and new streams and constraints
      */
