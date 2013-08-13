@@ -77,6 +77,8 @@ function WebRtcContent(url, options)
 
   // Error dispatcher functions
 
+  var _error = null;
+
   /**
    * Common function to dispatch the error to the user application
    *
@@ -84,8 +86,9 @@ function WebRtcContent(url, options)
    */
   function onerror(error)
   {
-    if(self.onerror)
-       self.onerror(error);
+    _error = error;
+
+    this.terminate();
   };
 
   /**
@@ -112,9 +115,19 @@ function WebRtcContent(url, options)
   // Dispatch 'close' event if signaling gets closed
   pc.onsignalingstatechange = function(event)
   {
-    if(pc.signalingState == "closed"
-    && self.onclose)
-       self.onclose(new Event('close'));
+    if(pc.signalingState == "closed")
+    {
+      if(_error)
+      {
+        if(self.onerror)
+           self.onerror(_error);
+      }
+      else
+      {
+        if(self.onterminate)
+           self.onterminate(new Event('terminate'));
+      }
+    }
   };
 
 
@@ -176,16 +189,16 @@ function WebRtcContent(url, options)
         pollMediaEvents();
 
         // Notify to the user about the new stream
-        if(self.onopen)
+        if(self.onstart)
         {
           var streams = pc.getRemoteStreams();
 
           if(streams && streams[0])
           {
-            var event = new Event('open');
+            var event = new Event('start');
                 event.stream = streams[0];
 
-            self.onopen(event);
+            self.onstart(event);
           }
           else
             onerror(new Error("No streams are available"));
@@ -218,11 +231,7 @@ function WebRtcContent(url, options)
       sessionId: sessionId
     };
 
-    $.jsonRPC.request('terminate',
-    {
-      params: params,
-      error:  onerror_jsonrpc
-    });
+    $.jsonRPC.request('terminate', {params: params});
 
     // Close the PeerConnection
     pc.close();
@@ -252,12 +261,12 @@ function WebRtcContent(url, options)
 
         if(result.events)
           for(var i=0, data; data=result.events[i]; i++)
-            if(self.onMediaEvent)
+            if(self.onmediaevent)
             {
               var event = new Event('MediaEvent');
                   event.data = data;
 
-              self.onMediaEvent(event);
+              self.onmediaevent(event);
             }
 
         if(pollingTimeout != 'stopped')
@@ -268,7 +277,7 @@ function WebRtcContent(url, options)
         onerror_jsonrpc(event);
 
         if(pollingTimeout != 'stopped')
-           pollingTimeout = setTimeout(pollMediaEvents, timeout);
+           pollingTimeout = setTimeout(pollMediaEvents, 0);
       }
     });
   }

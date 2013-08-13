@@ -88,9 +88,9 @@ $(function(event)
     setTerminate(conn);
 
     // Set connection success and error events
-    conn.onopen = function(event)
+    conn.onstart = function(event)
     {
-      log("Connection openned");
+      log("Connection started");
 
       // Set the incoming stream on the video tag
       remoteVideo.attr('src', URL.createObjectURL(event.stream));
@@ -98,17 +98,17 @@ $(function(event)
       // Enable terminate button
       btnTerminate.attr('disabled', false);
     };
-    conn.onclose = function(event)
+    conn.onterminate = function(event)
     {
-      log("Connection clossed");
+      log("Connection terminated");
     };
 
-    conn.onMediaEvent = function(event)
+    conn.onmediaevent = function(event)
     {
       info("MediaEvent: "+JSON.stringify(event.data))
     }
 
-    conn.onerror = function(event)
+    conn.onerror = function(error)
     {
       // Enable connect button
       disableInput(false);
