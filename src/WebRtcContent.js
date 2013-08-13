@@ -88,7 +88,7 @@ function WebRtcContent(url, options)
   {
     _error = error;
 
-    this.terminate();
+    self.terminate();
   };
 
   /**
