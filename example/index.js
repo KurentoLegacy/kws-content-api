@@ -5,38 +5,10 @@ $(function(event)
   var btnTerminate = $('#btnTerminate');
   var localVideo = $('#localVideo');
   var remoteVideo = $('#remoteVideo');
-  var divLog = $('#divLog');
+
+  console = new Console('console', console);
 
   var localStream = null;
-
-
-  function error(msg)
-  {
-    // Sanitize the input
-    msg = msg.replace(/</g, '&lt;');
-
-    msg = '<span style="color: #FF0000">'+msg+'</span>';
-
-    divLog.html(divLog.html() + msg + '<br>');
-  }
-
-  function info(msg)
-  {
-    // Sanitize the input
-    msg = msg.replace(/</g, '&lt;');
-
-    msg = '<span style="color: #0000FF">'+msg+'</span>';
-
-    divLog.html(divLog.html() + msg + '<br>');
-  }
-
-  function log(msg)
-  {
-    // Sanitize the input
-    msg = msg.replace(/</g, '&lt;');
-
-    divLog.html(divLog.html() + msg + '<br>');
-  }
 
 
   /**
@@ -65,7 +37,7 @@ $(function(event)
       // Terminate the connection
       conn.terminate();
 
-      log("Connection terminated by user");
+      console.log("Connection terminated by user");
 
       // Enable connect button
       disableInput(false);
@@ -82,7 +54,7 @@ $(function(event)
     var uri = txtUri.val();
     var conn = new WebRtcContent(uri, {stream: localStream});
 
-    log("Connection created pointing to '"+uri+"'");
+    console.log("Connection created pointing to '"+uri+"'");
 
     // Set and enable the terminate button
     setTerminate(conn);
@@ -90,7 +62,7 @@ $(function(event)
     // Set connection success and error events
     conn.onstart = function(event)
     {
-      log("Connection started");
+      console.log("Connection started");
 
       // Set the incoming stream on the video tag
       remoteVideo.attr('src', URL.createObjectURL(event.stream));
@@ -100,12 +72,12 @@ $(function(event)
     };
     conn.onterminate = function(event)
     {
-      log("Connection terminated");
+      console.log("Connection terminated");
     };
 
     conn.onmediaevent = function(event)
     {
-      info("MediaEvent: "+JSON.stringify(event.data))
+      console.info("MediaEvent: "+JSON.stringify(event.data))
     }
 
     conn.onerror = function(error)
@@ -114,8 +86,7 @@ $(function(event)
       disableInput(false);
 
       // Notify to the user of the error
-      error(event.message);
-      console.error(event);
+      console.error(error.message);
     };
   });
 
