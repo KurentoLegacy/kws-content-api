@@ -12,6 +12,7 @@ function WebRtcContent(url, options)
 
 
   // Initialize options and object status
+
   options = options || {};
 
   /**
@@ -66,6 +67,8 @@ function WebRtcContent(url, options)
   var video = decodeMode("video", options.video);
 
 
+  // Init the WebRtcContent object
+
   $.jsonRPC.setup({endPoint: url});
 
   var sessionId = null;
@@ -97,10 +100,10 @@ function WebRtcContent(url, options)
 
 
   // Create the PeerConnection object
-  var pc = new RTCPeerConnection(
-  {
-    iceServers: [{url: 'stun:'+'stun.l.google.com:19302'}]
-  });
+  var iceServers = options.iceServers
+                || [{url: 'stun:'+'stun.l.google.com:19302'}];
+
+  var pc = new RTCPeerConnection({iceServers: iceServers});
 
   // Add the local stream if defined
   if(options.stream)
