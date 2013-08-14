@@ -240,13 +240,15 @@ function WebRtcContent(url, options)
 
   // Pool
 
+  var MAX_ALLOWED_ERROR_TRIES = 10;
+
+  var error_tries = 0;
+
   /**
    * Pool for events dispatched on the server pipeline
    */
   function pollMediaEvents()
   {
-    var timeout = 5*1000;  // Request events each 5 seconds
-
     var params =
     {
       sessionId: sessionId
@@ -257,6 +259,8 @@ function WebRtcContent(url, options)
       params: params,
       success: function(response)
       {
+        error_tries = 0;
+
         var result = response.result;
 
         if(result.events)
@@ -270,14 +274,22 @@ function WebRtcContent(url, options)
             }
 
         if(pollingTimeout != 'stopped')
-           pollingTimeout = setTimeout(pollMediaEvents, timeout);
+           pollingTimeout = setTimeout(pollMediaEvents, 0);
       },
       error: function(event)
       {
-        onerror_jsonrpc(event);
+        // A poll error has occurred, retry it
+        if(error_tries < MAX_ALLOWED_ERROR_TRIES)
+        {
+          if(pollingTimeout != 'stopped')
+             pollingTimeout = setTimeout(pollMediaEvents, Math.pow(2, error_tries));
 
-        if(pollingTimeout != 'stopped')
-           pollingTimeout = setTimeout(pollMediaEvents, 0);
+          error_tries++;
+        }
+
+        // Max number of poll errors achieved, raise error
+        else
+    	  onerror_jsonrpc(event);
       }
     });
   }
