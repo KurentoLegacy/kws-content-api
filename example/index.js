@@ -45,17 +45,8 @@ $(function(event)
   }
 
 
-  btnConnect.on('click', function(event)
+  function initConnection(conn)
   {
-    // Disable connect button
-    disableInput(true);
-
-    // Create a new connection
-    var uri = txtUri.val();
-    var conn = new WebRtcContent(uri, {stream: localStream});
-
-    console.log("Connection created pointing to '"+uri+"'");
-
     // Set and enable the terminate button
     setTerminate(conn);
 
@@ -88,6 +79,32 @@ $(function(event)
       // Notify to the user of the error
       console.error(error.message);
     };
+  }
+
+
+  btnConnect.on('click', function(event)
+  {
+    // Disable connect button
+    disableInput(true);
+
+    // Create a new connection
+    var uri = txtUri.val();
+
+    try
+    {
+      var conn = new WebRtcContent(uri, {stream: localStream});
+
+      console.log("Connection created pointing to '"+uri+"'");
+
+      initConnection(conn);
+    }
+    catch(error)
+    {
+      console.error(error.message)
+
+      // Enable connect button
+      disableInput(false);
+    }
   });
 
   // Camera
