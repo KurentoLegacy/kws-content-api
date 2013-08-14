@@ -63,15 +63,11 @@ $(function(event)
 
     conn.onlocalstream = function(event)
     {
-      var stream = event.stream;
-
-      localVideo.attr('src', URL.createObjectURL(stream));
+      console.info("LocalStream set")
     }
     conn.onremotestream = function(event)
     {
-      var stream = event.stream;
-
-      remoteVideo.attr('src', URL.createObjectURL(stream));
+      console.info("RemoteStream set")
     }
 
     conn.onmediaevent = function(event)
@@ -98,9 +94,15 @@ $(function(event)
     // Create a new connection
     var uri = txtUri.val();
 
+    var options =
+    {
+      localVideoTag:  'localVideo',
+      remoteVideoTag: 'remoteVideo'
+    };
+
     try
     {
-      var conn = new WebRtcContent(uri);
+      var conn = new WebRtcContent(uri, options);
 
       console.log("Connection created pointing to '"+uri+"'");
 

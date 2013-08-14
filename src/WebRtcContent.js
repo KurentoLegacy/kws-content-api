@@ -191,56 +191,89 @@ function WebRtcContent(url, options)
           // Init MediaEvents polling
           pollMediaEvents();
 
-          // Notify to the user about the new stream
-          if(self.onstart)
+          // Local streams
+          if(video.local)
           {
-            // Local streams
-            if(video.local)
+            var streams = pc.getLocalStreams();
+
+            if(streams && streams[0])
             {
-              var streams = pc.getLocalStreams();
+              var stream = streams[0];
 
-              if(streams && streams[0])
+              if(options.localVideoTag)
               {
-                if(self.onlocalstream)
+                var localVideo = document.getElementById(options.localVideoTag);
+
+                if(localVideo)
+                   localVideo.src = URL.createObjectURL(stream);
+                else
                 {
-                  var event = new Event('localstream');
-                      event.stream = streams[0];
+                  var msg = "Requested local video tag '"+options.localVideoTag
+                          + "' is not available";
 
-                  self.onlocalstream(event)
-                }
+                  onerror(new Error(msg));
+                  return
+                };
               }
-              else
+
+              if(self.onlocalstream)
               {
-                onerror(new Error("No local streams are available"));
-                return
+                var event = new Event('localstream');
+                    event.stream = stream;
+
+                self.onlocalstream(event)
               }
             }
-
-            // Remote streams
-            if(video.remote)
+            else
             {
-              var streams = pc.getRemoteStreams();
-
-              if(streams && streams[0])
-              {
-                if(self.onremotestream)
-                {
-                  var event = new Event('remotestream');
-                      event.stream = streams[0];
-
-                  self.onremotestream(event)
-                }
-              }
-              else
-              {
-                onerror(new Error("No remote streams are available"));
-                return
-              }
+              onerror(new Error("No local streams are available"));
+              return
             }
-
-            // Notify we created the connection successfully
-            self.onstart(new Event('start'));
           }
+
+          // Remote streams
+          if(video.remote)
+          {
+            var streams = pc.getRemoteStreams();
+
+            if(streams && streams[0])
+            {
+              var stream = streams[0];
+
+              if(options.remoteVideoTag)
+              {
+                var remoteVideo = document.getElementById(options.remoteVideoTag);
+
+                if(remoteVideo)
+                   remoteVideo.src = URL.createObjectURL(stream);
+                else
+                {
+                  var msg = "Requested remote video tag '"
+                          + options.localVideoTag + "' is not available";
+
+                  onerror(new Error(msg));
+                  return
+                };
+              }
+
+              if(self.onremotestream)
+              {
+                var event = new Event('remotestream');
+                    event.stream = stream;
+
+                self.onremotestream(event)
+              }
+            }
+            else
+            {
+              onerror(new Error("No remote streams are available"));
+              return
+            }
+          }
+
+          // Notify we created the connection successfully
+          if(self.onstart)
+             self.onstart(new Event('start'));
         },
         onerror);
       }
