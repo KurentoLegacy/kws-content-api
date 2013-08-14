@@ -8,8 +8,6 @@ $(function(event)
 
   console = new Console('console', console);
 
-  var localStream = null;
-
 
   /**
    * Disable connect button
@@ -55,9 +53,6 @@ $(function(event)
     {
       console.log("Connection started");
 
-      // Set the incoming stream on the video tag
-      remoteVideo.attr('src', URL.createObjectURL(event.stream));
-
       // Enable terminate button
       btnTerminate.attr('disabled', false);
     };
@@ -65,6 +60,19 @@ $(function(event)
     {
       console.log("Connection terminated");
     };
+
+    conn.onlocalstream = function(event)
+    {
+      var stream = event.stream;
+
+      localVideo.attr('src', URL.createObjectURL(stream));
+    }
+    conn.onremotestream = function(event)
+    {
+      var stream = event.stream;
+
+      remoteVideo.attr('src', URL.createObjectURL(stream));
+    }
 
     conn.onmediaevent = function(event)
     {
@@ -92,7 +100,7 @@ $(function(event)
 
     try
     {
-      var conn = new WebRtcContent(uri, {stream: localStream});
+      var conn = new WebRtcContent(uri);
 
       console.log("Connection created pointing to '"+uri+"'");
 
@@ -100,25 +108,11 @@ $(function(event)
     }
     catch(error)
     {
-      console.error(error.message)
-
       // Enable connect button
       disableInput(false);
+
+      // Notify to the user of the error
+      console.error(error.message)
     }
-  });
-
-  // Camera
-  getUserMedia({'audio': true, 'video': true},
-  function(stream)
-  {
-    console.log('User has granted access to local media.');
-
-    localVideo.attr('src', URL.createObjectURL(stream));
-
-    localStream = stream;
-  },
-  function(error)
-  {
-    console.error(error);
   });
 });
