@@ -1,10 +1,14 @@
 /**
- * @class WebRtcContent
+ * @constructor WebRtcContent
  *
  * @param {String} url: URL of the WebRTC endpoint server.
- * @param {Object} options: optional configurations
+ * @param {Object} options: optional configuration parameters
  *   {Enum('none', 'send', 'recv', 'sendrecv')} audio: audio stream mode
  *   {Enum('none', 'send', 'recv', 'sendrecv')} video: video stream mode
+ *   {[Object]} iceServers: array of objects to initialize the ICE servers. It
+ *     structure is the same as an Array of WebRTC RTCIceServer objects.
+ *
+ * @throws RangeError
  */
 function WebRtcContent(url, options)
 {
@@ -18,8 +22,14 @@ function WebRtcContent(url, options)
   /**
    * Decode the mode of the streams
    *
+   * @private
+   *
    * @param {String} type: name of the constraints to decode (only for debug)
    * @param {String} mode: constraints to decode
+   *
+   * @returns {Object}
+   *
+   * @throws RangeError
    */
   function decodeMode(type, mode)
   {
@@ -108,6 +118,13 @@ function WebRtcContent(url, options)
 
   // Start
 
+  /**
+   * Request a connection with the webRTC endpoint server
+   *
+   * @private
+   *
+   * @param {MediaStream || undefined} localStream: stream locally offered
+   */
   function start(localStream)
   {
     // Create the PeerConnection object
@@ -140,10 +157,10 @@ function WebRtcContent(url, options)
 
     var mediaConstraints =
     {
-      'mandatory':
+      mandatory:
       {
-        'OfferToReceiveAudio': true,
-        'OfferToReceiveVideo': true
+        OfferToReceiveAudio: audio.remote,
+        OfferToReceiveVideo: video.remote
       }
     };
 
@@ -172,6 +189,8 @@ function WebRtcContent(url, options)
 
       /**
        * Callback when connection is succesful
+       *
+       * @private
        *
        * @param {Object} response: JsonRPC response
        */
@@ -318,6 +337,8 @@ function WebRtcContent(url, options)
 
   /**
    * Pool for events dispatched on the server pipeline
+   *
+   * @private
    */
   function pollMediaEvents()
   {
