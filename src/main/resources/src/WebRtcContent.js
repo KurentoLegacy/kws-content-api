@@ -108,7 +108,21 @@ function WebRtcContent(url, options)
    */
   function onerror_jsonrpc(response)
   {
-    onerror(new Error(response.error || response));
+    var error = null;
+
+    if(response.error)
+    {
+      if(typeof response.error === 'string')
+        error = new Error(response.error);
+
+      // response.error is a well formed Javascript error, use it directly
+      else
+        error = response.error
+    }
+    else
+      error = new Error(response);
+
+    onerror(error);
   };
 
 
@@ -369,7 +383,7 @@ function WebRtcContent(url, options)
         if(pollingTimeout != 'stopped')
            pollingTimeout = setTimeout(pollMediaEvents, 0);
       },
-      error: function(event)
+      error: function(response)
       {
         // A poll error has occurred, retry it
         if(error_tries < MAX_ALLOWED_ERROR_TRIES)
@@ -382,7 +396,7 @@ function WebRtcContent(url, options)
 
         // Max number of poll errors achieved, raise error
         else
-    	  onerror_jsonrpc(event);
+    	  onerror_jsonrpc(response);
       }
     });
   }
