@@ -13,7 +13,20 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+
+		<!-- Extensions Versions -->
+		<wagon-ssh.version>2.0</wagon-ssh.version>
 	</properties>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>${wagon-ssh.version}</version>
+			</extension>
+		</extensions>
+	</build>
 
 	<distributionManagement>
 		<repository>
