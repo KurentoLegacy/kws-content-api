@@ -1,6 +1,7 @@
 $(function(event)
 {
   var txtUri = $('#txtUri');
+  var chkUseWebRTC = $('#chkUseWebRTC');
   var btnConnect = $('#btnConnect');
   var btnTerminate = $('#btnTerminate');
   var localVideo = $('#localVideo');
@@ -102,7 +103,12 @@ $(function(event)
 
     try
     {
-      var conn = new WebRtcContent(uri, options);
+      var conn = null;
+
+      if(chkUseWebRTC.is(":checked"))
+        conn = new WebRtcContent(uri, options);
+      else
+        conn = new KwsContent(uri, options);
 
       console.log("Connection created pointing to '"+uri+"'");
 

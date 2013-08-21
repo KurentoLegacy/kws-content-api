@@ -5,12 +5,18 @@
     <script src="../lib/jquery.jsonrpc.js"></script>
 
     <script src="../src/Console.js"></script>
+    <script src="../src/KwsContent.js"></script>
     <script src="../src/WebRtcContent.js"></script>
 
     <script src="index.js"></script>
   </head>
   <body>
     <input id="txtUri" value="http://localhost:8180/content-demo/webrtc" />
+    </br>
+    <span>
+      <label for="chkUseWebRTC">Use WebRTC?</label>
+      <input id="chkUseWebRTC" type="checkbox" />
+    </span>
     </br>
     <button id="btnConnect">Connect</button>
     <button id="btnTerminate" disabled>Terminate</button>
