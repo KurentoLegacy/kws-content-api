@@ -15,4 +15,16 @@
 		<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Kurento releases repository</name>
+			<url>scp://repository.kurento.com/opt/tomcat/current/data/repositories/internal</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Kurento snapshots repository</name>
+			<url>scp://repository.kurento.com/opt/tomcat/current/data/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
