@@ -149,7 +149,7 @@ function KwsContent(url, options)
           var remoteVideo = document.getElementById(options.remoteVideoTag);
 
           if(remoteVideo)
-             remoteVideo.src = response.url;
+             remoteVideo.src = result.url;
           else
           {
             var msg = "Requested remote video tag '"
@@ -170,7 +170,7 @@ function KwsContent(url, options)
         if(self.onremotestream)
         {
           var event = new Event('remotestream');
-              event.stream = response.url;
+              event.stream = result.url;
 
           self.onremotestream(event)
         }
