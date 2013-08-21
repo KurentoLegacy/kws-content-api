@@ -108,21 +108,7 @@ function WebRtcContent(url, options)
    */
   function onerror_jsonrpc(response)
   {
-    var error = null;
-
-    if(response.error)
-    {
-      if(typeof response.error === 'string')
-        error = new Error(response.error);
-
-      // response.error is a well formed Javascript error, use it directly
-      else
-        error = response.error
-    }
-    else
-      error = new Error(response);
-
-    onerror(error);
+    onerror(response.error);
   };
 
 
