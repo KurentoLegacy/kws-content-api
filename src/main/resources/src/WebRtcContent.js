@@ -24,21 +24,22 @@ function WebRtcContent(url, options)
    *
    * @private
    *
-   * @param {String} type: name of the constraints to decode (only for debug)
-   * @param {String} mode: constraints to decode
+   * @param {Object} options: constraints to update and decode
+   * @param {String} type: name of the constraints to decode
    *
    * @returns {Object}
    *
    * @throws RangeError
    */
-  function decodeMode(type, mode)
+  function decodeMode(options, type)
   {
     var result = {};
 
+    // If not defined, set send & receive by default
+    options[type] = options[type] || 'sendrecv';
+
     switch(mode)
     {
-      case undefined:  // If not defined, set send & receive by default
-      case null:
       case 'sendrecv':
         result.local  = true;
         result.remote = true;
@@ -71,10 +72,10 @@ function WebRtcContent(url, options)
     throw new RangeError("At least one audio or video must to be enabled");
 
   // Audio media
-  var audio = decodeMode("audio", options.audio);
+  var audio = decodeMode(options, "audio");
 
   // Video media
-  var video = decodeMode("video", options.video);
+  var video = decodeMode(options, "video");
 
 
   // Init the WebRtcContent object
@@ -184,7 +185,12 @@ function WebRtcContent(url, options)
 
       var params =
       {
-        sdp: pc.localDescription.sdp
+        sdp: pc.localDescription.sdp,
+        contrainsts:
+        {
+          audio: options.audio,
+          video: options.video
+        }
       };
 
       /**
