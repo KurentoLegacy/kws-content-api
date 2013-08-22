@@ -10,8 +10,24 @@
  */
 function Console(id, console)
 {
-//  var div = document.getElementById(id);
-  var div = $('#'+id);
+  this._div = document.getElementById(id);
+
+
+  function createMessage(msg, color)
+  {
+    // Sanitize the input
+    msg = msg.toString().replace(/</g, '&lt;');
+
+    var span = document.createElement('SPAN');
+
+    if(color != undefined)
+      span.style.color = color;
+
+    span.appendChild(document.createTextNode(msg));
+    span.appendChild(document.createElement('BR'));
+
+    return span;
+  }
 
 
   /**
@@ -23,12 +39,7 @@ function Console(id, console)
   {
     console.error(msg);
 
-    // Sanitize the input
-    msg = msg.toString().replace(/</g, '&lt;');
-
-    msg = '<span style="color: #FF0000">'+msg+'</span>';
-
-    div.html(div.html() + msg + '<br>');
+    this._div.appendChild(createMessage(msg, "#FF0000"));
   }
 
   /**
@@ -40,12 +51,7 @@ function Console(id, console)
   {
     console.warn(msg);
 
-    // Sanitize the input
-    msg = msg.toString().replace(/</g, '&lt;');
-
-    msg = '<span style="color: #FFFF00">'+msg+'</span>';
-
-    div.html(div.html() + msg + '<br>');
+    this._div.appendChild(createMessage(msg, "#FFFF00"));
   }
 
   /**
@@ -57,10 +63,7 @@ function Console(id, console)
   {
     console.info(msg);
 
-    // Sanitize the input
-    msg = msg.toString().replace(/</g, '&lt;');
-
-    div.html(div.html() + msg + '<br>');
+    this._div.appendChild(createMessage(msg));
   }
 
   /**
@@ -72,11 +75,6 @@ function Console(id, console)
   {
     console.log(msg);
 
-    // Sanitize the input
-    msg = msg.toString().replace(/</g, '&lt;');
-
-    msg = '<span style="color: #0000FF">'+msg+'</span>';
-
-    div.html(div.html() + msg + '<br>');
+    this._div.appendChild(createMessage(msg, "#0000FF"));
   }
 }
