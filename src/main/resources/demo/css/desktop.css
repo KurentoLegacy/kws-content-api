@@ -1,0 +1,31 @@
+iframe
+{
+  height: 480;
+  width: 100%;
+}
+
+#videoPanel
+{
+  background:#00ff00;
+  box-shadow: 10px 10px 5px #888;
+  float: left;
+  position: fixed;
+  width: 50%;
+}
+
+#txtUri
+{
+  width: 100%;
+}
+
+#video
+{
+  width: 100%;
+}
+
+#console
+{
+  float: right;
+  overflow: auto;
+  width: 50%;
+}

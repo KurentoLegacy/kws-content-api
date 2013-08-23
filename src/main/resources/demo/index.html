@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <link href="css/phone.css" media="(max-width: 639px)" rel="stylesheet"/>
+    <link href="css/desktop.css" media="(min-width: 640px)" rel="stylesheet"/>
+
+    <script src="lib/jquery-1.10.2.min.js"></script>
+    <script src="lib/jquery.jsonrpc.js"></script>
+    <script src="lib/jquery.scrollTo.min.js"></script>
+
+    <script src="js/Console.js"></script>
+    <script src="js/KwsContent.js"></script>
+
+    <script src="js/index.js"></script>
+  </head>
+  <body>
+    <div id="videoPanel">
+      <input id="txtUri" value="http://193.147.51.10:8080/content-demo/testJson" />
+      </br>
+      <video id="video" poster="img/logo.png" autoplay></video>
+      </br>
+      <button id="btnPlayStop">Play</button>
+      <INPUT id="rangeVolume" TYPE="RANGE" MIN="0" MAX="1" STEP="0.1" VALUE="1">
+    </div>
+    <div id="console"></div>
+  </body>
+</html>
