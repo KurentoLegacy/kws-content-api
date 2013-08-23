@@ -1,7 +1,12 @@
 <html>
   <head>
-    <link href="css/phone.css" media="(max-width: 639px)" rel="stylesheet"/>
-    <link href="css/desktop.css" media="(min-width: 640px)" rel="stylesheet"/>
+    <title>KWS Content Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="img/logo.png" type="image/png" />
+
+    <link href="css/phone.css" media="(max-width: 749px)" rel="stylesheet"/>
+    <link href="css/desktop.css" media="(min-width: 750px)" rel="stylesheet"/>
 
     <script src="lib/jquery-1.10.2.min.js"></script>
     <script src="lib/jquery.jsonrpc.js"></script>
@@ -13,14 +18,24 @@
     <script src="js/index.js"></script>
   </head>
   <body>
+    <div id="header">
+      <a id="kurentoLogo" href="http://kurento.com">
+        <img src="img/Kurento.jpg" />
+      </a>
+      <a id="fiWareLogo" href="http://www.fi-ware.eu">
+        <img src="img/fi-ware.png" />
+      </a>
+    </div>
     <div id="videoPanel">
-      <input id="txtUri" value="http://193.147.51.10:8080/content-demo/testJson" />
+      <input id="txtUri" value="http://193.147.51.10:8080/content-demo/playerJson" />
       </br>
-      <video id="video" poster="img/logo.png" autoplay></video>
+      <video id="video" poster="img/movie-theater.jpg" autoplay></video>
       </br>
       <button id="btnPlayStop">Play</button>
       <INPUT id="rangeVolume" TYPE="RANGE" MIN="0" MAX="1" STEP="0.1" VALUE="1">
     </div>
     <div id="console"></div>
+    <div id="footer">
+    </div>
   </body>
 </html>

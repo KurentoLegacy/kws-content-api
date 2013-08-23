@@ -1,21 +1,20 @@
 {
-    "name": "KWS Content demo",
-    "description": "Demo app for the KWS Content API",
-    "version": "1",
-    "launch_path": "/index.html",
-    "icons":
-    {
-        "16": "/icon_x16.png",
-        "128": "/icon_x128.png"
-    },
-    "installs_allowed_from":
-    [
-        "https://marketplace.firefox.com",
-        "https://5apps.com"
-    ],
-    "developer":
-    {
-        "name": "Jes\u00fas Legan\u00e9s Combarro",
-        "url": "http://pirannafs.blogspot.com.es/"
-    }
+  "name": "KWS Content demo",
+  "description": "Demo app for the KWS Content API",
+  "version": "1",
+  "launch_path": "index.html",
+  "icons":
+  {
+    "60": "img/logo.png"
+  },
+  "installs_allowed_from":
+  [
+    "https://marketplace.firefox.com",
+    "https://5apps.com"
+  ],
+  "developer":
+  {
+    "name": "Jes\u00fas Legan\u00e9s Combarro",
+    "url": "http://pirannafs.blogspot.com.es/"
+  }
 }
