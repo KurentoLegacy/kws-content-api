@@ -254,11 +254,19 @@
                 }
                 break
 
-              default:
+              case 500:
                 response.error =
                 {
                   code:    -32603,
                   message: 'Internal server error'
+                }
+                break;
+
+              default:
+                response.error =
+                {
+                  code:    -32604,  // Custom one
+                  message: 'Unknown error'
                 }
             }
 

@@ -3,8 +3,8 @@
  *
  * @param {String} url: URL of the WebRTC endpoint server.
  * @param {Object} options: optional configuration parameters
- *   {Enum('none', 'send', 'recv', 'sendrecv')} audio: audio stream mode
- *   {Enum('none', 'send', 'recv', 'sendrecv')} video: video stream mode
+ *   {Enum('inactive', 'sendonly', 'recvonly', 'sendrecv')} audio: audio stream mode
+ *   {Enum('inactive', 'sendonly', 'recvonly', 'sendrecv')} video: video stream mode
  *   {[Object]} iceServers: array of objects to initialize the ICE servers. It
  *     structure is the same as an Array of WebRTC RTCIceServer objects.
  *
@@ -45,17 +45,17 @@ function WebRtcContent(url, options)
         result.remote = true;
       break;
 
-      case 'send':
+      case 'sendonly':
         result.local  = true;
         result.remote = false;
       break;
 
-      case 'recv':
+      case 'recvonly':
         result.local  = false;
         result.remote = true;
       break;
 
-      case 'none':
+      case 'inactive':
         result.local  = false;
         result.remote = false;
       break;
@@ -68,7 +68,7 @@ function WebRtcContent(url, options)
   }
 
   // We can't disable both audio and video on a stream, raise error
-  if(options.audio == 'none' && options.video == 'none')
+  if(options.audio == 'inactive' && options.video == 'inactive')
     throw new RangeError("At least one audio or video must to be enabled");
 
   // Audio media
@@ -323,12 +323,15 @@ function WebRtcContent(url, options)
     pollingTimeout = 'stopped';
 
     // Notify to the WebRTC endpoint server
-    var params =
+    if(sessionId)
     {
-      sessionId: sessionId
-    };
+      var params =
+      {
+        sessionId: sessionId
+      };
 
-    $.jsonRPC.request('terminate', {params: params});
+      $.jsonRPC.request('terminate', {params: params});
+    };
 
     // Close the PeerConnection
     pc.close();
