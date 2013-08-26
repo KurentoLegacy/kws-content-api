@@ -1,5 +1,6 @@
-body
+html, body
 {
+  height: 100%;
   margin: 0;
 }
 
@@ -9,12 +10,28 @@ iframe
   width: 100%;
 }
 
+
+#header,#footer,#content
+{
+  position: absolute;
+  right: 0;
+  left: 0;
+}
+
+
 #header
 {
   background:#FFFFFF;
   box-shadow: 0px 10px 5px #888;
-  position: fixed;
+  height: 63px;
+  top: 0;
   width: 100%;
+  z-index: 1;
+}
+
+#header img
+{
+  height: 100%;
 }
 
 #kurentoLogo
@@ -22,28 +39,35 @@ iframe
   float: left;
 }
 
-#kurentoLogo img
-{
-  height: 63px;
-}
-
 #fiWareLogo
 {
   float: right;
 }
 
-#fiWareLogo img
+
+#content
 {
-  height: 63px;
+  bottom: 63px;
+  background: #DBEAF9;
+  overflow: auto;
+  top: 63px;
+}
+
+.panel
+{
+  box-shadow: 10px 10px 5px #888;
+  position: fixed;
+  width: 47%;
 }
 
 #videoPanel
 {
   background:#00ff00;
-  box-shadow: 10px 10px 5px #888;
-/*  float: left;
-/*  position: fixed;*/
-  width: 47%;
+}
+
+#viewer
+{
+  left: 50%;
 }
 
 #txtUri
@@ -58,15 +82,36 @@ iframe
 
 #console
 {
-  float: right;
   overflow: auto;
-  width: 50%;
+  width: 100%;
 }
+
 
 #footer
 {
-  background:#000000;
+  background:#FFFFFF;
+  bottom: 0;
   box-shadow: 0px -10px 5px #888;
-  position: fixed;
+  height: 63px;
   width: 100%;
+}
+
+#footer #UrjcLogo
+{
+  float: left;
+}
+
+#footer #CampusPartyEuropeLogo
+{
+  float: right;
+}
+
+#footer img
+{
+  height: 100%;
+}
+
+#footer p
+{
+  text-align: center;
 }

@@ -18,6 +18,7 @@
     <script src="js/index.js"></script>
   </head>
   <body>
+
     <div id="header">
       <a id="kurentoLogo" href="http://kurento.com">
         <img src="img/Kurento.jpg" />
@@ -26,16 +27,29 @@
         <img src="img/fi-ware.png" />
       </a>
     </div>
-    <div id="videoPanel">
-      <input id="txtUri" value="http://193.147.51.10:8080/content-demo/playerJson" />
-      </br>
-      <video id="video" poster="img/movie-theater.jpg" autoplay></video>
-      </br>
-      <button id="btnPlayStop">Play</button>
-      <INPUT id="rangeVolume" TYPE="RANGE" MIN="0" MAX="1" STEP="0.1" VALUE="1">
+
+    <div id="content">
+      <div id="videoPanel" class="panel">
+        <input id="txtUri" value="http://193.147.51.10:8080/content-demo/playerJson" />
+        </br>
+        <video id="video" poster="img/movie-theater.jpg" autoplay></video>
+        </br>
+        <button id="btnPlayStop">Play</button>
+        <INPUT id="rangeVolume" TYPE="RANGE" MIN="0" MAX="1" STEP="0.1" VALUE="1">
+      </div>
+      <iframe id="viewer" class="panel"></iframe>
+      <div id="console"></div>
     </div>
-    <div id="console"></div>
+
     <div id="footer">
+      <a id="UrjcLogo" href="http://www.urjc.es">
+        <img src="img/urjc.gif" />
+      </a>
+      <a id="CampusPartyEuropeLogo" href="http://www.campus-party.eu/2013/index-cpeu.html">
+        <img src="img/CampusPartyBlueWhite.jpg" />
+      </a>
+      <p>(C) 2013 <a href="http://kurento.com">Kurento</a></p>
     </div>
+
   </body>
 </html>

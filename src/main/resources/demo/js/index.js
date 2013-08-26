@@ -4,16 +4,9 @@ $(function(event)
   var btnPlayStop = $('#btnPlayStop');
   var video = $('#video');
   var rangeVolume = $('#rangeVolume');
+  var viewer = $('#viewer');
 
   console = new Console('console', console);
-
-  console.iframe = function(url)
-  {
-    var iframe = document.createElement('IFRAME')
-        iframe.src = url;
-
-    this._append(iframe);
-  }
 
 
   var conn = null;
@@ -54,20 +47,9 @@ $(function(event)
     {
       var data = event.data;
 
-/*      switch(data.type)
-      {
-        case "url":
-          console.iframe(data.data);
-          break;
-
-        default:
-          console.info(data.type+" => "+data.data);
-      }
-*/
-
       data = data.data;
       if(data.substr(0, 4) == "http")
-        console.iframe(data);
+        viewer.attr('src', data);
       else
         console.info(data);
     }
