@@ -3,17 +3,42 @@
 /*div {
 	border: 1px dotted black;
 }*/
-.separator {
-	clear: both;
+
+
+/* Three panels structure */
+#header,#footer,#content
+{
+  position: absolute;
+  right: 0;
+  left: 0;
 }
+
+#header
+{
+	top: 0;
+}
+
+#content
+{
+  bottom: 85px;  /* Should be the same as footer height */
+  overflow: auto;
+  top: 78px;  /* Should be the same as header height */
+}
+
+#footer
+{
+  bottom: 0;
+}
+/* Three panels structure */
+
 
 #header {
-	border-bottom: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
-#content {
-	margin-top: 15px;
-	border-bottom: 1px solid black;
+#content
+{
+  border-bottom: 1px solid black;
 }
 
 #fiWareLogoContainer {
@@ -34,20 +59,22 @@
 	float: right;
 }
 
-#leftPanel {
-	float: left;
-	width: 45%;
-}
-
 #videoPanel {
+	text-align:center;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
-	width: 90%;
+  float: left;
+  width: 50%;
+}
+
+#iframePanel {
+  float: right;
+  width: 50%;
 }
 
 #txtUri {
-	margin: 10px 10px 10px 20px;
+	margin: 10px;
 	width: 75%;
 }
 
@@ -64,25 +91,22 @@
 }
 
 #video {
+	border-width: 1px;
+	border-style: solid;
 	box-shadow: 10px 10px 5px #888888;
 	background: black;
 	width: 640px;
 	min-height: 480px;
 }
 
-#arrowPanel {
+#arrowRight {
 	display: none;
-	background-image: url('../img/arrow.png');
+	background-image: url('../img/arrowRight.png');
 	height: 250px;
 	width: 250px;
 	top: 250px;
-	left: 650px;
-	position: absolute;
-}
-
-#rightPanel {
-	float: right;
-	width: 45%;
+  left: 200px;
+  position: absolute;
 }
 
 #textEventContainer div {
@@ -126,6 +150,7 @@
 }
 
 #console {
+  clear: both;
 	margin-top: 20px;
 	border-top: 1px dotted black;
 	font-size: 11px;

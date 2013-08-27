@@ -43,17 +43,29 @@ $(function(event) {
 			var data = event.data;
 
 			eventTypeTxt.text("Event type: " + data.type);
-			eventValueTxt.text("Event data: " + data.data);
 
 			data = data.data;
-			if (data.substr(0, 4) == "http") {
-				// Make event arrow to glitch
-				$('#arrowPanel').fadeIn('slow', function(event) {
-					$('#arrowPanel').fadeOut('slow')
-				});
+			if(data.substr(0, 4) == "http")
+			{
+				eventValueTxt.html('Event data: <a href="'+data+'">'+data+'</a>');
+
+				// Animate arrow
+				var arrowRight = $('#arrowRight');
+				var left = arrowRight.css("left");
+				var newLeft = $(window).width() -(arrowRight.width() + parseInt(left));
+
+				arrowRight
+					.fadeIn('fast')
+					.animate({left: newLeft}, 'slow')
+					.fadeOut('fast')
+					.animate({left: left}, 0);
+
 				// Make appear iframe content
 				viewer.attr('src', data);
-			} else {
+			}
+			else
+			{
+				eventValueTxt.text("Event data: " + data);
 				console.info(data);
 			}
 		}
@@ -66,7 +78,8 @@ $(function(event) {
 		};
 	}
 
-	btnPlayStop.on('click', function(event) {
+	function playVideo()
+	{
 		// Disable terminate button
 		btnPlayStop.attr('disabled', true);
 
@@ -102,7 +115,16 @@ $(function(event) {
 				console.error(error.message)
 			}
 		}
-	});
+	}
+
+	btnPlayStop.on('click', playVideo);
+
+	txtUri.keydown(function(event)
+	{
+		var key = event.which || event.keyCode;
+	    if(key === 13)
+	    	playVideo();
+	})
 
 	rangeVolume.on('change', function(event) {
 		video[0].volume = rangeVolume.val();

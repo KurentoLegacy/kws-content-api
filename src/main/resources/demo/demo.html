@@ -17,9 +17,10 @@
 <script src="js/KwsContent.js"></script>
 
 <script src="js/index.js"></script>
-
 </head>
 <body>
+
+
 	<div id="header">
 		<a href="http://www.fi-ware.eu" id="fiWareLogoContainer"> <img
 			src="img/fi-ware.png" id="fiWareLogo">
@@ -32,34 +33,35 @@
 				</a>
 			</div>
 		</div>
-		<div class="separator"></div>
 	</div>
 
+
 	<div id="content">
-		<div class="panel" id="leftPanel">
-			<input
-				value="http://193.147.51.10:8080/content-demo/demo/campusPartyPlayerFilter"
-				id="txtUri">
-			<button id="btnPlayStop">Play</button>
-			<br>
-			<div id="videoPanel">
-				<video autoplay="autoplay" poster="img/movie-theater.jpg" id="video"></video>
-			</div>
-			<br>
+
+		<div id="videoPanel">
+		  <div>
+        <input id="txtUri" value="http://193.147.51.10:8080/content-demo/playerJson" />
+<!--         <input id="txtUri" value="http://193.147.51.10:8080/content-demo/campusPartyPlayerFilter" /> -->
+	      <button id="btnPlayStop">Play</button>
+		  </div>
+			<video autoplay="autoplay" poster="img/movie-theater.jpg" id="video"></video>
 		</div>
-		<div id="arrowPanel">Event</div>
-		<div id="rightPanel">
+
+		<div id="iframePanel">
 			<div id="textEventContainer">
-				<div id="eventTypeTxt"></div>
-				<div id="eventValueTxt"></div>
+				<div id="eventTypeTxt">Event type:</div>
+				<div id="eventValueTxt">Event data:</div>
 			</div>
 			<div id="iframeContainer">
+<!-- 			  <img src="img/spin.gif" /> -->
 				<iframe class="panel" id="viewer"></iframe>
 			</div>
 		</div>
-		<div class="separator"></div>
-	</div>
 
+    <div id="console"></div>
+
+    <div id="arrowRight"></div>
+	</div>
 
 
 	<div id="footer">
@@ -75,7 +77,6 @@
 			</p>
 		</div>
 	</div>
-	<div class="separator"></div>
-	<div id="console"></div>
+
 </body>
 </html>
