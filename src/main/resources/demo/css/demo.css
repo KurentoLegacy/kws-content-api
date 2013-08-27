@@ -1,0 +1,133 @@
+@CHARSET "UTF-8";
+
+/*div {
+	border: 1px dotted black;
+}*/
+.separator {
+	clear: both;
+}
+
+#header {
+	border-bottom: 1px solid black;
+}
+
+#content {
+	margin-top: 15px;
+	border-bottom: 1px solid black;
+}
+
+#fiWareLogoContainer {
+	float: left;
+}
+
+#fiWareLogo {
+	height: 60px;
+	margin: 10px 10px 2px 20px;
+}
+
+#kurentoLogo {
+	height: 40px;
+	margin: 2px;
+}
+
+#poweredByPanel {
+	float: right;
+}
+
+#leftPanel {
+	float: left;
+	width: 45%;
+}
+
+#videoPanel {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	width: 90%;
+}
+
+#txtUri {
+	margin: 10px 10px 10px 20px;
+	width: 75%;
+}
+
+#btnPlayStop {
+	width: 15%;
+}
+
+#eventTypeTxt {
+	height: 20px;
+}
+
+#eventValueTxt {
+	height: 20px;
+}
+
+#video {
+	box-shadow: 10px 10px 5px #888888;
+	background: black;
+	width: 640px;
+	min-height: 480px;
+}
+
+#arrowPanel {
+	display: none;
+	background-image: url('../img/arrow.png');
+	height: 250px;
+	width: 250px;
+	top: 250px;
+	left: 650px;
+	position: absolute;
+}
+
+#rightPanel {
+	float: right;
+	width: 45%;
+}
+
+#textEventContainer div {
+	margin: 2px;
+}
+
+#iframeContainer {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#viewer {
+	display: block;
+	width: 640px;
+	height: 480px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#urjcLogoContainer {
+	float: left;
+}
+
+#urjcLogo {
+	height: 80px;
+	marging: 10px 30px 10px 10px;
+}
+
+#naevatecLogoContainer {
+	float: right;
+}
+
+#naevatecLogo {
+	height: 80px;
+	marging: 10px 30px 10px 10px;
+}
+
+#copyright {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#console {
+	margin-top: 20px;
+	border-top: 1px dotted black;
+	font-size: 11px;
+	background-color: #f0f0ff;
+}

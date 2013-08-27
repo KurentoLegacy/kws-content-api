@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KWS Content Demo</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/demo.css">
+<link rel="shortcut icon" href="img/logo.png" type="image/png" />
+
+<!-- <script src="http://code.jquery.com/jquery-1.9.1.js"></script> -->
+<script src="lib/jquery-1.10.2.min.js"></script>
+<script src="lib/jquery.jsonrpc.js"></script>
+<script src="lib/jquery.scrollTo.min.js"></script>
+
+<script src="js/Console.js"></script>
+<script src="js/KwsContent.js"></script>
+
+<script src="js/index.js"></script>
+
+</head>
+<body>
+	<div id="header">
+		<a href="http://www.fi-ware.eu" id="fiWareLogoContainer"> <img
+			src="img/fi-ware.png" id="fiWareLogo">
+		</a>
+		<div id="poweredByPanel">
+			<div id="poweredByText">Powered by</div>
+			<div>
+				<a id="kurentoLogoContainer" href="http://www.fi-ware.eu"> <img
+					src="img/Kurento.jpg" id="kurentoLogo" />
+				</a>
+			</div>
+		</div>
+		<div class="separator"></div>
+	</div>
+
+	<div id="content">
+		<div class="panel" id="leftPanel">
+			<input
+				value="http://193.147.51.10:8080/content-demo/demo/campusPartyPlayerFilter"
+				id="txtUri">
+			<button id="btnPlayStop">Play</button>
+			<br>
+			<div id="videoPanel">
+				<video autoplay="autoplay" poster="img/movie-theater.jpg" id="video"></video>
+			</div>
+			<br>
+		</div>
+		<div id="arrowPanel">Event</div>
+		<div id="rightPanel">
+			<div id="textEventContainer">
+				<div id="eventTypeTxt"></div>
+				<div id="eventValueTxt"></div>
+			</div>
+			<div id="iframeContainer">
+				<iframe class="panel" id="viewer"></iframe>
+			</div>
+		</div>
+		<div class="separator"></div>
+	</div>
+
+
+
+	<div id="footer">
+		<div id="urjcLogoContainer">
+			<img src="img/urjc.gif" id="urjcLogo">
+		</div>
+		<div id="naevatecLogoContainer">
+			<img src="img/CampusPartyBlueWhite.jpg" id="naevatecLogo">
+		</div>
+		<div id="copyright">
+			<p align="center">
+				(C) 2013 <a href="http://kurento.com">Kurento</a>
+			</p>
+		</div>
+	</div>
+	<div class="separator"></div>
+	<div id="console"></div>
+</body>
+</html>
