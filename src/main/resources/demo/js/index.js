@@ -47,27 +47,33 @@ $(function(event) {
 			eventTypeTxt.text("Event type: " + data.type);
 
 			data = data.data;
-			if (data.substr(0, 4) == "http") {
-				// Animate arrow
+			if(data.substr(0, 4) == "http")
+			{
+				// Animate arrow to right
 				var arrowRight = $('#arrowRight');
 				var left = arrowRight.css("left");
 				var newLeft = $(window).width()
 						- (arrowRight.width() + parseInt(left));
 
-				setTimeout(function() {
+				// [Hack] delay event to synchronize with video image
+				setTimeout(function()
+				{
+					// Show event url value
+					eventValueTxt.html('Event data: <a href="'+data+'">'+data+'</a>');
+
+					// Update iframe content with a fade-to-white effect
 					viewer.attr('src', "about:blank");
-					setTimeout(function(){
-						eventValueTxt.html('Event data: <a href="' + data + '">' + data
-								+ '</a>');
+					setTimeout(function()
+					{
 						viewer.attr('src', data);
 					}, 0);
-					
-					//viewer.css('visibility', 'hidden');					
-					arrowRight.fadeIn('slow').animate({
-						left : newLeft
-					}, 1000).fadeOut('slow').animate({
-						left : left
-					}, 0);
+
+					//viewer.css('visibility', 'hidden');
+					arrowRight
+						.fadeIn('slow')
+						.animate({left: newLeft}, 1000)
+						.fadeOut('slow')
+						.animate({left: left}, 0);
 
 					// Make appear iframe content
 					// viewer.attr('src', data);
@@ -75,6 +81,18 @@ $(function(event) {
 				}, 3600);
 			} else {
 				eventValueTxt.text("Event data: " + data);
+
+				// Animate arrow to down
+				var arrowDown = $('#arrowDown');
+				var top = arrowDown.css("top");
+				var newTop = $(window).height() -(arrowDown.height() + parseInt(top));
+
+				arrowDown
+					.fadeIn('fast')
+					.animate({top: newTop}, 'slow')
+					.fadeOut('fast')
+					.animate({top: top}, 0);
+
 				console.info(data);
 			}
 		}

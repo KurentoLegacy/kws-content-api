@@ -5,7 +5,7 @@
 }*/
 
 body{
-	
+
 }
 
 /* Three panels structure */
@@ -47,7 +47,7 @@ body{
 }
 
 #kurentoLogo {
-	
+
 	height: 40px;
 	margin: 2px;
 }
@@ -104,13 +104,20 @@ body{
 }
 
 #arrowRight {
-	display: none;
-	background-image: url('../img/arrowRight.png');
-	height: 250px;
-	width: 250px;
-	top: 250px;
-	left: 200px;
-	position: absolute;
+  display: none;
+  height: 250px;
+  width: 250px;
+  top: 250px;
+  left: 200px;
+  position: absolute;
+}
+
+#arrowDown {
+  display: none;
+  height: 250px;
+  width: 250px;
+  top: 250px;
+  position: absolute;
 }
 
 #textEventContainer div {
