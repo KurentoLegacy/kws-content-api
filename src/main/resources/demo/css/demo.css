@@ -4,41 +4,37 @@
 	border: 1px dotted black;
 }*/
 
-
-/* Three panels structure */
-#header,#footer,#content
-{
-  position: absolute;
-  right: 0;
-  left: 0;
+body{
+	
 }
 
-#header
-{
+/* Three panels structure */
+#header,#footer,#content {
+	position: absolute;
+	right: 0;
+	left: 0;
+}
+
+#header {
 	top: 0;
 }
 
-#content
-{
-  bottom: 85px;  /* Should be the same as footer height */
-  overflow: auto;
-  top: 78px;  /* Should be the same as header height */
+#content {
+	bottom: 100px; /* Should be the same as footer height */
+	overflow: auto;
+	top: 78px; /* Should be the same as header height */
 }
 
-#footer
-{
-  bottom: 0;
+#footer {
+	bottom: 0;
 }
 /* Three panels structure */
-
-
 #header {
-  border-bottom: 1px solid black;
+	border-bottom: 1px solid black;
 }
 
-#content
-{
-  border-bottom: 1px solid black;
+#content {
+	border-bottom: 1px solid black;
 }
 
 #fiWareLogoContainer {
@@ -51,26 +47,29 @@
 }
 
 #kurentoLogo {
+	
 	height: 40px;
 	margin: 2px;
 }
 
 #poweredByPanel {
 	float: right;
+	font-family: verdana;
+	font-size: 11px;
 }
 
 #videoPanel {
-	text-align:center;
+	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
-  float: left;
-  width: 50%;
+	float: left;
+	width: 50%;
 }
 
 #iframePanel {
-  float: right;
-  width: 50%;
+	float: right;
+	width: 50%;
 }
 
 #txtUri {
@@ -80,6 +79,11 @@
 
 #btnPlayStop {
 	width: 15%;
+}
+
+#textEventContainer {
+	margin-left: 30px;
+	margin-top: 10px;
 }
 
 #eventTypeTxt {
@@ -96,7 +100,7 @@
 	box-shadow: 10px 10px 5px #888888;
 	background: black;
 	width: 640px;
-	min-height: 480px;
+	min-height: 524px;
 }
 
 #arrowRight {
@@ -105,8 +109,8 @@
 	height: 250px;
 	width: 250px;
 	top: 250px;
-  left: 200px;
-  position: absolute;
+	left: 200px;
+	position: absolute;
 }
 
 #textEventContainer div {
@@ -114,16 +118,15 @@
 }
 
 #iframeContainer {
-	display: table-cell;
-	vertical-align: middle;
+	text-align: center;
 }
 
 #viewer {
-	display: block;
 	width: 640px;
-	height: 480px;
+	height: 510px;
 	margin-left: auto;
 	margin-right: auto;
+	box-shadow: 10px 10px 5px #888888;
 }
 
 #urjcLogoContainer {
@@ -132,16 +135,25 @@
 
 #urjcLogo {
 	height: 80px;
-	marging: 10px 30px 10px 10px;
+	margin: 10px 30px 10px 10px;
 }
 
 #naevatecLogoContainer {
-	float: right;
+	float: left;
 }
 
 #naevatecLogo {
 	height: 80px;
-	marging: 10px 30px 10px 10px;
+	margin: 10px 30px 10px 10px;
+}
+
+#campusPartyLogoContainer {
+	float: right;
+}
+
+#campusPartyLogo {
+	height: 80px;
+	margin: 10px 30px 10px 10px;
 }
 
 #copyright {
@@ -150,7 +162,7 @@
 }
 
 #console {
-  clear: both;
+	clear: both;
 	margin-top: 20px;
 	border-top: 1px dotted black;
 	font-size: 11px;

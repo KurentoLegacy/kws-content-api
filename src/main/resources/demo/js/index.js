@@ -1,10 +1,12 @@
-
 $(function(event) {
 	var txtUri = $('#txtUri');
 	var btnPlayStop = $('#btnPlayStop');
 	var video = $('#video');
 	var rangeVolume = $('#rangeVolume');
 	var viewer = $('#viewer');
+//	viewer.on('load', function() {
+//		viewer.css('visibility', 'visible');
+//	});
 	var eventTypeTxt = $('#eventTypeTxt');
 	var eventValueTxt = $('#eventValueTxt');
 
@@ -45,26 +47,33 @@ $(function(event) {
 			eventTypeTxt.text("Event type: " + data.type);
 
 			data = data.data;
-			if(data.substr(0, 4) == "http")
-			{
-				eventValueTxt.html('Event data: <a href="'+data+'">'+data+'</a>');
-
+			if (data.substr(0, 4) == "http") {
 				// Animate arrow
 				var arrowRight = $('#arrowRight');
 				var left = arrowRight.css("left");
-				var newLeft = $(window).width() -(arrowRight.width() + parseInt(left));
+				var newLeft = $(window).width()
+						- (arrowRight.width() + parseInt(left));
 
-				arrowRight
-					.fadeIn('fast')
-					.animate({left: newLeft}, 'slow')
-					.fadeOut('fast')
-					.animate({left: left}, 0);
+				setTimeout(function() {
+					viewer.attr('src', "about:blank");
+					setTimeout(function(){
+						eventValueTxt.html('Event data: <a href="' + data + '">' + data
+								+ '</a>');
+						viewer.attr('src', data);
+					}, 0);
+					
+					//viewer.css('visibility', 'hidden');					
+					arrowRight.fadeIn('slow').animate({
+						left : newLeft
+					}, 1000).fadeOut('slow').animate({
+						left : left
+					}, 0);
 
-				// Make appear iframe content
-				viewer.attr('src', data);
-			}
-			else
-			{
+					// Make appear iframe content
+					// viewer.attr('src', data);
+
+				}, 3600);
+			} else {
 				eventValueTxt.text("Event data: " + data);
 				console.info(data);
 			}
@@ -78,8 +87,7 @@ $(function(event) {
 		};
 	}
 
-	function playVideo()
-	{
+	function playVideo() {
 		// Disable terminate button
 		btnPlayStop.attr('disabled', true);
 
@@ -119,11 +127,10 @@ $(function(event) {
 
 	btnPlayStop.on('click', playVideo);
 
-	txtUri.keydown(function(event)
-	{
+	txtUri.keydown(function(event) {
 		var key = event.which || event.keyCode;
-	    if(key === 13)
-	    	playVideo();
+		if (key === 13)
+			playVideo();
 	})
 
 	rangeVolume.on('change', function(event) {
