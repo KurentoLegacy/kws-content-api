@@ -26,6 +26,7 @@ body{
 }
 
 #footer {
+	text-align: center;
 	bottom: 0;
 }
 /* Three panels structure */
@@ -68,6 +69,7 @@ body{
 }
 
 #iframePanel {
+	text-align: center;
 	float: right;
 	width: 50%;
 }
@@ -82,6 +84,7 @@ body{
 }
 
 #textEventContainer {
+	text-align: left;
 	margin-left: 30px;
 	margin-top: 10px;
 }
@@ -99,8 +102,9 @@ body{
 	border-style: solid;
 	box-shadow: 10px 10px 5px #888888;
 	background: black;
+	margin-top: 5px;
 	width: 640px;
-	min-height: 524px;
+	min-height: 480px;
 }
 
 #arrowRight {
@@ -124,13 +128,9 @@ body{
 	margin: 2px;
 }
 
-#iframeContainer {
-	text-align: center;
-}
-
 #viewer {
 	width: 640px;
-	height: 510px;
+	height: 480px;
 	margin-left: auto;
 	margin-right: auto;
 	box-shadow: 10px 10px 5px #888888;
