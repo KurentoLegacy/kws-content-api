@@ -91,8 +91,12 @@ $(function(event) {
 
 				// Animate arrow to down
 				var arrowDown = $('#arrowDown');
-				var top = arrowDown.css("top");
-				var newTop = $(window).height() -(arrowDown.height() + parseInt(top));
+				var top = parseInt(arrowDown.css("top"));
+				var newTop = $(window).height() -(arrowDown.height() + top);
+
+				// Don't go backwards if the page height is too small
+				if(newTop < top)
+				   newTop = $(window).height();
 
 				arrowDown
 					.fadeIn('fast')

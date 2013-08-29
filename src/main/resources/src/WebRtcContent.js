@@ -14,110 +14,9 @@ function WebRtcContent(url, options)
 {
   var self = this;
 
-
-  // Initialize options and object status
-
-  options = options || {};
-
-  /**
-   * Decode the mode of the streams
-   *
-   * @private
-   *
-   * @param {Object} options: constraints to update and decode
-   * @param {String} type: name of the constraints to decode
-   *
-   * @returns {Object}
-   *
-   * @throws RangeError
-   */
-  function decodeMode(options, type)
-  {
-    var result = {};
-
-    // If not defined, set send & receive by default
-    options[type] = options[type] || 'sendrecv';
-
-    switch(mode)
-    {
-      case 'sendrecv':
-        result.local  = true;
-        result.remote = true;
-      break;
-
-      case 'sendonly':
-        result.local  = true;
-        result.remote = false;
-      break;
-
-      case 'recvonly':
-        result.local  = false;
-        result.remote = true;
-      break;
-
-      case 'inactive':
-        result.local  = false;
-        result.remote = false;
-      break;
-
-      default:
-        throw new RangeError("Invalid "+type+" media mode");
-    }
-
-    return result;
-  }
-
-  // We can't disable both audio and video on a stream, raise error
-  if(options.audio == 'inactive' && options.video == 'inactive')
-    throw new RangeError("At least one audio or video must to be enabled");
-
-  // Audio media
-  var audio = decodeMode(options, "audio");
-
-  // Video media
-  var video = decodeMode(options, "video");
-
-
-  // Init the WebRtcContent object
-
-  $.jsonRPC.setup({endPoint: url});
-
-  var sessionId = null;
-  var pollingTimeout = null;
-
-
-  // Error dispatcher functions
-
-  var _error = null;
-
-  /**
-   * Common function to dispatch the error to the user application
-   *
-   * @param {Error} error: error object to be dispatched
-   */
-  function onerror(error)
-  {
-    _error = error;
-
-    self.terminate();
-  };
-
-  /**
-   * Adaptor from jsonRPC errors to standard Javascript Error objects
-   *
-   * @param response: jsonRPC error object
-   */
-  function onerror_jsonrpc(response)
-  {
-    onerror(response.error);
-  };
-
-
-  // RPC calls
+  Content.call(this, url, options);
 
   var pc = null;
-
-  // Start
 
   /**
    * Request a connection with the webRTC endpoint server
@@ -126,7 +25,7 @@ function WebRtcContent(url, options)
    *
    * @param {MediaStream || undefined} localStream: stream locally offered
    */
-  function start(localStream)
+  function initRtc(localStream)
   {
     // Create the PeerConnection object
     var iceServers = options.iceServers
@@ -142,26 +41,15 @@ function WebRtcContent(url, options)
     pc.onsignalingstatechange = function(event)
     {
       if(pc.signalingState == "closed")
-      {
-        if(_error)
-        {
-          if(self.onerror)
-             self.onerror(_error);
-        }
-        else
-        {
-          if(self.onterminate)
-             self.onterminate(new Event('terminate'));
-        }
-      }
+        self._close();
     };
 
     var mediaConstraints =
     {
       mandatory:
       {
-        OfferToReceiveAudio: audio.remote,
-        OfferToReceiveVideo: video.remote
+        OfferToReceiveAudio: self._audio.remote,
+        OfferToReceiveVideo: self._video.remote
       }
     };
 
@@ -173,9 +61,9 @@ function WebRtcContent(url, options)
       {
         console.info("LocalDescription correctly set");
       },
-      onerror);
+      self._onerror);
     },
-    onerror,
+    self._onerror,
     mediaConstraints);
 
     pc.onicecandidate = function(event)
@@ -183,133 +71,134 @@ function WebRtcContent(url, options)
       if(event.candidate)
         return;
 
-      var params =
+      start();
+    }
+  }
+
+  // RPC calls
+
+  // Start
+
+  /**
+   * Request a connection with the webRTC endpoint server
+   *
+   * @private
+   */
+  function start()
+  {
+    var params =
+    {
+      sdp: pc.localDescription.sdp,
+      contrainsts:
       {
-        sdp: pc.localDescription.sdp,
-        contrainsts:
+        audio: options.audio,
+        video: options.video
+      }
+    };
+
+    /**
+     * Callback when connection is succesful
+     *
+     * @private
+     *
+     * @param {Object} response: JsonRPC response
+     */
+    function success(response)
+    {
+      var result = response.result;
+
+      self._setSessionId(result.sessionId);
+
+      function success2()
+      {
+        // Init MediaEvents polling
+        pollMediaEvents();
+
+        // Local streams
+        if(self._video.local)
         {
-          audio: options.audio,
-          video: options.video
+          var streams = pc.getLocalStreams();
+
+          if(streams && streams[0])
+          {
+            var stream = streams[0];
+
+            if(options.localVideoTag)
+            {
+              var localVideo = document.getElementById(options.localVideoTag);
+
+              if(localVideo)
+                 localVideo.src = URL.createObjectURL(stream);
+              else
+              {
+                var msg = "Requested local video tag '"+options.localVideoTag
+                        + "' is not available";
+                 self._onerror(new Error(msg));
+                return
+              };
+            }
+
+            if(self.onlocalstream)
+            {
+              var event = new Event('localstream');
+                  event.stream = stream;
+
+              self.onlocalstream(event)
+            }
+          }
+          else
+          {
+            self._onerror(new Error("No local streams are available"));
+            return
+          }
         }
-      };
 
-      /**
-       * Callback when connection is succesful
-       *
-       * @private
-       *
-       * @param {Object} response: JsonRPC response
-       */
-      function success(response)
-      {
-        var result = response.result;
-
-        sessionId = result.sessionId;
-
-        pc.setRemoteDescription(new RTCSessionDescription(
+        // Remote streams
+        if(self._video.remote)
         {
-          type: 'answer',
-          sdp: result.sdp
-        }),
-        function()
-        {
-          // Init MediaEvents polling
-          pollMediaEvents();
+          var streams = pc.getRemoteStreams();
 
-          // Local streams
-          if(video.local)
+          if(streams && streams[0])
           {
-            var streams = pc.getLocalStreams();
+            var stream = streams[0];
 
-            if(streams && streams[0])
+            if(options.remoteVideoTag)
             {
-              var stream = streams[0];
+              var url = URL.createObjectURL(stream);
 
-              if(options.localVideoTag)
-              {
-                var localVideo = document.getElementById(options.localVideoTag);
-
-                if(localVideo)
-                   localVideo.src = URL.createObjectURL(stream);
-                else
-                {
-                  var msg = "Requested local video tag '"+options.localVideoTag
-                          + "' is not available";
-
-                  onerror(new Error(msg));
-                  return
-                };
-              }
-
-              if(self.onlocalstream)
-              {
-                var event = new Event('localstream');
-                    event.stream = stream;
-
-                self.onlocalstream(event)
-              }
+              self._setRemoteVideoTag(url);
             }
-            else
+
+            if(self.onremotestream)
             {
-              onerror(new Error("No local streams are available"));
-              return
+              var event = new Event('remotestream');
+                  event.stream = stream;
+
+              self.onremotestream(event)
             }
           }
-
-          // Remote streams
-          if(video.remote)
+          else
           {
-            var streams = pc.getRemoteStreams();
-
-            if(streams && streams[0])
-            {
-              var stream = streams[0];
-
-              if(options.remoteVideoTag)
-              {
-                var remoteVideo = document.getElementById(options.remoteVideoTag);
-
-                if(remoteVideo)
-                   remoteVideo.src = URL.createObjectURL(stream);
-                else
-                {
-                  var msg = "Requested remote video tag '"
-                          + options.localVideoTag + "' is not available";
-
-                  onerror(new Error(msg));
-                  return
-                };
-              }
-
-              if(self.onremotestream)
-              {
-                var event = new Event('remotestream');
-                    event.stream = stream;
-
-                self.onremotestream(event)
-              }
-            }
-            else
-            {
-              onerror(new Error("No remote streams are available"));
-              return
-            }
+            self._onerror(new Error("No remote streams are available"));
+            return
           }
+        }
 
-          // Notify we created the connection successfully
-          if(self.onstart)
-             self.onstart(new Event('start'));
-        },
-        onerror);
+        // Notify we created the connection successfully
+        if(self.onstart)
+           self.onstart(new Event('start'));
       }
 
-      $.jsonRPC.request('start',
+      pc.setRemoteDescription(new RTCSessionDescription(
       {
-        params:  params,
-        success: success,
-        error:   onerror_jsonrpc
-      });
-    };
+        type: 'answer',
+        sdp: result.sdp
+      }),
+      success2,
+      self._onerror);
+    }
+
+    self._start(params, success);
   };
 
 
@@ -318,97 +207,24 @@ function WebRtcContent(url, options)
    */
   this.terminate = function()
   {
-    // Stop polling
-    clearTimeout(pollingTimeout);
-    pollingTimeout = 'stopped';
-
-    // Notify to the WebRTC endpoint server
-    if(sessionId)
-    {
-      var params =
-      {
-        sessionId: sessionId
-      };
-
-      $.jsonRPC.request('terminate', {params: params});
-    };
+    this._terminate();
 
     // Close the PeerConnection
     pc.close();
   };
 
-
-  // Pool
-
-  var MAX_ALLOWED_ERROR_TRIES = 10;
-
-  var error_tries = 0;
-
-  /**
-   * Pool for events dispatched on the server pipeline
-   *
-   * @private
-   */
-  function pollMediaEvents()
-  {
-    var params =
-    {
-      sessionId: sessionId
-    };
-
-    $.jsonRPC.request('poll',
-    {
-      params: params,
-      success: function(response)
-      {
-        error_tries = 0;
-
-        var result = response.result;
-
-        if(result.events)
-          for(var i=0, data; data=result.events[i]; i++)
-            if(self.onmediaevent)
-            {
-              var event = new Event('MediaEvent');
-                  event.data = data;
-
-              self.onmediaevent(event);
-            }
-
-        if(pollingTimeout != 'stopped')
-           pollingTimeout = setTimeout(pollMediaEvents, 0);
-      },
-      error: function(response)
-      {
-        // A poll error has occurred, retry it
-        if(error_tries < MAX_ALLOWED_ERROR_TRIES)
-        {
-          if(pollingTimeout != 'stopped')
-             pollingTimeout = setTimeout(pollMediaEvents, Math.pow(2, error_tries));
-
-          error_tries++;
-        }
-
-        // Max number of poll errors achieved, raise error
-        else
-    	  onerror_jsonrpc(response);
-      }
-    });
-  }
-
-
   // Mode set to send local audio and/or video stream
-  if(audio.local || video.local)
-    getUserMedia({'audio': audio.local, 'video': video.local},
+  if(this._audio.local || this._video.local)
+    getUserMedia({'audio': this._audio.local, 'video': this._video.local},
     function(stream)
     {
       console.log('User has granted access to local media.');
 
-      start(stream);
+      initRtc(stream);
     },
-    onerror);
+    self._onerror);
 
   // Mode set to only receive a stream, not send it
   else
-	start();
+    initRtc();
 }

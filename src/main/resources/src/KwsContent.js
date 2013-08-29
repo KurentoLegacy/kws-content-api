@@ -14,104 +14,7 @@ function KwsContent(url, options)
 {
   var self = this;
 
-
-  // Initialize options and object status
-
-  options = options || {};
-
-  /**
-   * Decode the mode of the streams
-   *
-   * @private
-   *
-   * @param {Object} options: constraints to update and decode
-   * @param {String} type: name of the constraints to decode
-   *
-   * @returns {Object}
-   *
-   * @throws RangeError
-   */
-  function decodeMode(options, type)
-  {
-    var result = {};
-
-    // If not defined, set send & receive by default
-    options[type] = options[type] || 'sendrecv';
-
-    switch(options[type])
-    {
-      case 'sendrecv':
-        result.local  = true;
-        result.remote = true;
-      break;
-
-      case 'sendonly':
-        result.local  = true;
-        result.remote = false;
-      break;
-
-      case 'recvonly':
-        result.local  = false;
-        result.remote = true;
-      break;
-
-      case 'inactive':
-        result.local  = false;
-        result.remote = false;
-      break;
-
-      default:
-        throw new RangeError("Invalid "+type+" media mode");
-    }
-
-    return result;
-  }
-
-  // We can't disable both audio and video on a stream, raise error
-  if(options.audio == 'inactive' && options.video == 'inactive')
-    throw new RangeError("At least one audio or video must to be enabled");
-
-  // Audio media
-  var audio = decodeMode(options, "audio");
-
-  // Video media
-  var video = decodeMode(options, "video");
-
-
-  // Init the WebRtcContent object
-
-  $.jsonRPC.setup({endPoint: url});
-
-  var sessionId = null;
-  var pollingTimeout = null;
-
-
-  // Error dispatcher functions
-
-  var _error = null;
-
-  /**
-   * Common function to dispatch the error to the user application
-   *
-   * @param {Error} error: error object to be dispatched
-   */
-  function onerror(error)
-  {
-    _error = error;
-
-    self.terminate();
-  };
-
-  /**
-   * Adaptor from jsonRPC errors to standard Javascript Error objects
-   *
-   * @param response: jsonRPC error object
-   */
-  function onerror_jsonrpc(response)
-  {
-    onerror(response.error);
-  };
-
+  Content.call(this, url, options);
 
   // RPC calls
 
@@ -121,8 +24,6 @@ function KwsContent(url, options)
    * Request a connection with the webRTC endpoint server
    *
    * @private
-   *
-   * @param {MediaStream || undefined} localStream: stream locally offered
    */
   function start()
   {
@@ -146,57 +47,48 @@ function KwsContent(url, options)
     {
       var result = response.result;
 
-      sessionId = result.sessionId;
+      self._setSessionId(result.sessionId);
 
-      // Init MediaEvents polling
-      pollMediaEvents();
-
-      // Remote streams
-      if(video.remote)
+      function success2()
       {
-        if(options.remoteVideoTag)
-        {
-          var remoteVideo = document.getElementById(options.remoteVideoTag);
+        // Init MediaEvents polling
+        self._pollMediaEvents();
 
-          if(remoteVideo)
-             remoteVideo.src = result.url;
+        // Remote streams
+        if(self._video.remote)
+        {
+          if(options.remoteVideoTag)
+          {
+            var url = result.url;
+
+            var remoteVideo = self._setRemoteVideoTag(url);
+
+            remoteVideo.addEventListener('ended', function()
+            {
+              self.terminate();
+            })
+          }
           else
+            console.warn("No remote video tag available, successful terminate event due to remote end will be no dispatched");
+
+          if(self.onremotestream)
           {
-            var msg = "Requested remote video tag '"
-                    + options.localVideoTag + "' is not available";
+            var event = new Event('remotestream');
+                event.stream = result.url;
 
-            onerror(new Error(msg));
-            return
-          };
-
-          remoteVideo.addEventListener('ended', function()
-          {
-            self.terminate();
-          })
+            self.onremotestream(event)
+          }
         }
-        else
-          console.warn("No remote video tag available, successful terminate event due to remote end will be no dispatched");
 
-        if(self.onremotestream)
-        {
-          var event = new Event('remotestream');
-              event.stream = result.url;
-
-          self.onremotestream(event)
-        }
+        // Notify we created the connection successfully
+        if(self.onstart)
+           self.onstart(new Event('start'));
       }
 
-      // Notify we created the connection successfully
-      if(self.onstart)
-         self.onstart(new Event('start'));
+      success2();
     }
 
-    $.jsonRPC.request('start',
-    {
-      params:  params,
-      success: success,
-      error:   onerror_jsonrpc
-    });
+    self._start(params, success);
   };
 
 
@@ -205,96 +97,14 @@ function KwsContent(url, options)
    */
   this.terminate = function()
   {
-    // Stop polling
-    clearTimeout(pollingTimeout);
-    pollingTimeout = 'stopped';
-
-    // Notify to the WebRTC endpoint server
-    if(sessionId)
-    {
-      var params =
-      {
-        sessionId: sessionId
-      };
-
-      $.jsonRPC.request('terminate', {params: params});
-    };
+    this._terminate();
 
     var remoteVideo = document.getElementById(options.remoteVideoTag);
     if(remoteVideo)
-    	remoteVideo.src = '';
+       remoteVideo.src = '';
 
-    if(_error)
-    {
-      if(self.onerror)
-         self.onerror(_error);
-    }
-    else
-    {
-      if(self.onterminate)
-         self.onterminate(new Event('terminate'));
-    }
+    this._close();
   };
-
-
-  // Pool
-
-  var MAX_ALLOWED_ERROR_TRIES = 10;
-
-  var error_tries = 0;
-
-  /**
-   * Pool for events dispatched on the server pipeline
-   *
-   * @private
-   */
-  function pollMediaEvents()
-  {
-    var params =
-    {
-      sessionId: sessionId
-    };
-
-    $.jsonRPC.request('poll',
-    {
-      params: params,
-      success: function(response)
-      {
-        error_tries = 0;
-
-        var result = response.result;
-
-        if(result.events)
-          for(var i=0, data; data=result.events[i]; i++)
-            if(self.onmediaevent)
-            {
-              var event = new Event('MediaEvent');
-                  event.data = data;
-
-              self.onmediaevent(event);
-            }
-
-        if(pollingTimeout != 'stopped')
-           pollingTimeout = setTimeout(pollMediaEvents, 0);
-      },
-      error: function(event)
-      {
-        // A poll error has occurred, retry it
-        if(error_tries < MAX_ALLOWED_ERROR_TRIES)
-        {
-          if(pollingTimeout != 'stopped')
-             pollingTimeout = setTimeout(pollMediaEvents, Math.pow(2, error_tries));
-
-          error_tries++;
-        }
-
-        // Max number of poll errors achieved, raise error
-        else
-    	  onerror_jsonrpc(event);
-      }
-    });
-  }
-
 
   // Mode set to only receive a stream, not send it
   start();
