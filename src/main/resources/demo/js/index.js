@@ -9,6 +9,7 @@ $(function(event) {
 //	});
 	var eventTypeTxt = $('#eventTypeTxt');
 	var eventValueTxt = $('#eventValueTxt');
+	var lastEventValue = "";
 
 	console = new Console('console', console);
 
@@ -42,11 +43,17 @@ $(function(event) {
 		}
 
 		conn.onmediaevent = function(event) {
-			var data = event.data;
+			var mediaEvent = event.data;
 
-			eventTypeTxt.text("Event type: " + data.type);
+			//Do not send two times an event with the same value
+			if(mediaEvent.data == lastEventValue){
+				return;
+			}
+			lastEventValue = mediaEvent.data;
+			
+			eventTypeTxt.text("Event type: " + mediaEvent.type);
 
-			data = data.data;
+			data = mediaEvent.data;
 			if(data.substr(0, 4) == "http")
 			{
 				// Animate arrow to right
