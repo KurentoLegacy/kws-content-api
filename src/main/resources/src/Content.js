@@ -85,7 +85,10 @@ function Content(url, options)
 
   // Error dispatcher functions
 
+  var MAX_ALLOWED_ERROR_TRIES = 10;
+
   var _error = null;
+  var error_tries = 0;
 
   /**
    * Common function to dispatch the error to the user application
@@ -116,26 +119,26 @@ function Content(url, options)
 
   this._start = function(params, success)
   {
-    $.jsonRPC.request('start',
-    {
-      params:  params,
-      success: success,
-      error:   onerror_jsonrpc
-    });
+    if(sessionId)
+      throw new SyntaxError("Connection already open");
+
+    else
+      $.jsonRPC.request('start',
+      {
+        params:  params,
+        success: success,
+        error:   onerror_jsonrpc
+      });
   }
 
   // Pool
-
-  var MAX_ALLOWED_ERROR_TRIES = 10;
-
-  var error_tries = 0;
 
   /**
    * Pool for events dispatched on the server pipeline
    *
    * @private
    */
-  self._pollMediaEvents = function()
+  this._pollMediaEvents = function()
   {
     var params =
     {
@@ -164,7 +167,7 @@ function Content(url, options)
         if(pollingTimeout != 'stopped')
            pollingTimeout = setTimeout(self._pollMediaEvents, 0);
       },
-      error: function(event)
+      error: function(response)
       {
         // A poll error has occurred, retry it
         if(error_tries < MAX_ALLOWED_ERROR_TRIES)
@@ -177,7 +180,7 @@ function Content(url, options)
 
         // Max number of poll errors achieved, raise error
         else
-    	  onerror_jsonrpc(event);
+          onerror_jsonrpc(response);
       }
     });
   }
@@ -200,6 +203,8 @@ function Content(url, options)
       };
 
       $.jsonRPC.request('terminate', {params: params});
+
+      this._setSessionId(null);
     };
   };
 
@@ -239,5 +244,37 @@ function Content(url, options)
     };
 
     return remoteVideo;
+  }
+
+  this.execute = function(type, data, callback)
+  {
+    if(sessionId)
+    {
+      var params =
+      {
+        sessionId: sessionId,
+        command:
+        {
+          type: type,
+          data: data
+        }
+      };
+
+      $.jsonRPC.request('execute',
+      {
+        params: params,
+        success: function(response)
+        {
+          callback(null, response.result.commandResult);
+        },
+        error: function(response)
+        {
+          callback(response.error);
+        }
+      });
+    }
+
+    else
+      throw new SyntaxError("Connection needs to be open");
   }
 }

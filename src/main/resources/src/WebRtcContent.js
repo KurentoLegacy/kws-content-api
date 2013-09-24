@@ -112,7 +112,7 @@ function WebRtcContent(url, options)
       function success2()
       {
         // Init MediaEvents polling
-        pollMediaEvents();
+        self._pollMediaEvents();
 
         // Local streams
         if(self._video.local)
