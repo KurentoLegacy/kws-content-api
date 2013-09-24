@@ -68,6 +68,7 @@ function WebRtcContent(url, options)
 
     pc.onicecandidate = function(event)
     {
+      // We are still generating the candidates, don't send the SDP yet.
       if(event.candidate)
         return;
 

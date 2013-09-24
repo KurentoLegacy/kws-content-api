@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test 4 - Video, options + events</title>
+
+    <script src="../src/main/resources/lib/jquery-1.10.2.min.js"></script>
+    <script src="../src/main/resources/lib/jquery.jsonrpc.js"></script>
+
+    <script src="../src/main/resources/src/KwsContent.js"></script>
+  </head>
+  <body>
+    <video id="remoteVideo" autoplay></video>
+
+    <span>
+      <label for="status">Status</label>
+      <input id="status" name="status" readonly />
+    </span>
+    <textarea id="output" rows=10 style="width: 100%"></textarea>
+
+    <script>
+      var remoteVideo = document.getElementById('remoteVideo');
+      var inputStatus = document.getElementById('status');
+
+      remoteVideo.addEventListener('play', function(event)
+      {
+        inputStatus.value = 'play';
+        console.log(status.value);
+      });
+/*       remoteVideo.addEventListener('playing', function(event)
+      {
+        inputStatus.value = 'playing';
+        console.log(status.value);
+      });
+ */    </script>
+
+    <script>
+      var endpoint = "http://193.147.51.29:8080/content-api-test/playerJsonZBar";
+      var options =
+      {
+        audio: "recvonly",
+        video: "recvonly",
+        remoteVideoTag: "remoteVideo"
+      };
+
+      var conn = new KwsContent(endpoint, options);
+
+      conn.onstart = function(event)
+      {
+        var textNode = document.createTextNode("Connection created\n");
+        document.getElementById('output').appendChild(textNode);
+      }
+
+      conn.onterminate = function(event)
+      {
+        var textNode = document.createTextNode("Connection terminated\n");
+        document.getElementById('output').appendChild(textNode);
+      }
+
+      conn.onmediaevent = function(event)
+      {
+        var textNode = document.createTextNode("MediaEvent: "+JSON.stringify(event.data)+"\n");
+        document.getElementById('output').appendChild(textNode);
+      }
+
+      conn.onerror = function(error)
+      {
+        var textNode = document.createTextNode("Error: "+error.message+"\n");
+        document.getElementById('output').appendChild(textNode);
+      }
+    </script>
+  </body>
+</html>

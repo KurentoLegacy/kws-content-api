@@ -34,7 +34,7 @@ function Console(id, console)
     div.appendChild(element);
     div.appendChild(document.createElement('BR'));
 
-    $(window).scrollTo('max', {duration: 500});
+//    $(window).scrollTo('max', {duration: 500});
   }
 
 
