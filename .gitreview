@@ -1,5 +1,5 @@
 [gerrit]
 host=repository.kurento.com
 port=12345
-project=kws/kws-content-api
+project=kws-content-api
 defaultbranch=develop
