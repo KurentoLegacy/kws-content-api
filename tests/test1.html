@@ -7,11 +7,19 @@
     <script src="../src/main/resources/lib/jquery-1.10.2.min.js"></script>
     <script src="../src/main/resources/lib/jquery.jsonrpc.js"></script>
 
+    <script src="../src/main/resources/src/Content.js"></script>
     <script src="../src/main/resources/src/KwsContent.js"></script>
+
+    <script src="config.js"></script>
   </head>
   <body>
     <video id="remoteVideo" autoplay></video>
 
+    <span>
+      <label for="url">Url</label>
+      <input id="url" name="url" />
+    </span>
+    <button id="run" onclick="run()">Run</button>
     <span>
       <label for="status">Status</label>
       <input id="status" name="status" readonly />
@@ -21,6 +29,9 @@
     <script>
       var remoteVideo = document.getElementById('remoteVideo');
       var inputStatus = document.getElementById('status');
+
+      var inputUrl = document.getElementById('url');
+      inputUrl.value = config.videoUrls.test1;
 
       remoteVideo.addEventListener('play', function(event)
       {
@@ -32,33 +43,39 @@
         inputStatus.value = 'playing';
         console.log(status.value);
       });
- */    </script>
+ */
+      function log(text)
+      {
+        var textNode = document.createTextNode(text+"\n");
+        document.getElementById('output').appendChild(textNode);
+      }
+    </script>
 
     <script>
-      var endpoint = "http://193.147.51.29:8080/content-api-test/playerJson";
-      var options =
+      function run()
       {
-        remoteVideoTag: "remoteVideo"
-      };
+        var endpoint = inputUrl.value;
+        var options =
+        {
+          remoteVideoTag: "remoteVideo"
+        };
 
-      var conn = new KwsContent(endpoint, options);
+        var conn = new KwsContent(endpoint, options);
 
-      conn.onstart = function(event)
-      {
-        var textNode = document.createTextNode("Connection created\n");
-        document.getElementById('output').appendChild(textNode);
-      }
+        conn.onstart = function(event)
+        {
+          log("Connection created");
+        }
 
-      conn.onterminate = function(event)
-      {
-        var textNode = document.createTextNode("Connection terminated\n");
-        document.getElementById('output').appendChild(textNode);
-      }
+        conn.onterminate = function(event)
+        {
+          log("Connection terminated");
+        }
 
-      conn.onerror = function(error)
-      {
-        var textNode = document.createTextNode("Error: "+error.message+"\n");
-        document.getElementById('output').appendChild(textNode);
+        conn.onerror = function(error)
+        {
+          log("Error: "+error.message);
+        }
       }
     </script>
   </body>
