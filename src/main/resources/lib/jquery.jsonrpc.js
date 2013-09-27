@@ -1,3 +1,10 @@
+/*
+ * Modified from jquery-jsonrpc
+ * https://github.com/datagraph/jquery-jsonrpc/blob/master/jquery.jsonrpc.js
+ * The project is Public Domain under http://unlicense.org/
+ *
+ */
+
 (function($, undefined) {
   $.extend({
     jsonRPC: {

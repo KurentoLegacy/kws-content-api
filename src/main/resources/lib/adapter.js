@@ -1,3 +1,9 @@
+/*
+ * From a sample in WebRTC (new BSD license)
+ * https://code.google.com/p/webrtc/source/browse/trunk/samples/js/base/adapter.js
+ * 
+ */
+
 var RTCPeerConnection = null;
 var getUserMedia = null;
 var attachMediaStream = null;
