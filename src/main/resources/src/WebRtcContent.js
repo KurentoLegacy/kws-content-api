@@ -119,11 +119,13 @@ function WebRtcContent(url, options)
      *
      * @param {Object} response: JsonRPC response
      */
-    function success(response)
+    function success(error, sdp)
     {
-      var result = response.result;
-
-      self._setSessionId(result.sessionId);
+      if(error)
+      {
+        console.error("["+error.code+"] "+error.message);
+        return;
+      };
 
       function success2()
       {
@@ -205,10 +207,11 @@ function WebRtcContent(url, options)
            self.onstart(new Event('start'));
       }
 
+      // Set answer description and init local environment
       pc.setRemoteDescription(new RTCSessionDescription(
       {
         type: 'answer',
-        sdp: result.sdp
+        sdp: sdp
       }),
       success2,
       self._onerror);
@@ -223,7 +226,7 @@ function WebRtcContent(url, options)
    */
   this.terminate = function()
   {
-    this._terminate();
+    this._terminate(Content.REASON_USER_ENDED_SESSION);
 
     // Close the PeerConnection
     pc.close();

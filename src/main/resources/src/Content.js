@@ -13,6 +13,7 @@
  *
  */
 
+
 /**
  * @constructor KwsContent
  *
@@ -28,6 +29,8 @@
 function Content(url, options)
 {
   var self = this;
+
+  const ERROR_NO_REMOTE_VIDEO_TAG = -1;
 
   // Initialize options and object status
 
@@ -140,9 +143,22 @@ function Content(url, options)
     else
       $.jsonRPC.request('start',
       {
-        params:  params,
-        success: success,
-        error:   onerror_jsonrpc
+        params: params,
+        success: function(response)
+        {
+          var result = response.result;
+
+          if(result.rejected)
+            this._onerror(result.rejected)
+
+          else
+          {
+            sessionId = result.sessionId;
+
+            success(result.sdp || result.url);
+          }
+        },
+        error: onerror_jsonrpc
       });
   }
 
@@ -174,7 +190,7 @@ function Content(url, options)
           for(var i=0, data; data=result.contentEvents[i]; i++)
             if(self.onmediaevent)
             {
-              var event = new Event('MediaEvent');
+              var event = new Event('mediaevent');
                   event.data = data;
 
               self.onmediaevent(event);
@@ -227,7 +243,7 @@ function Content(url, options)
   /**
    * Terminate the connection with the WebRTC media server
    */
-  this._terminate = function()
+  this._terminate = function(reason)
   {
     // Stop polling
     clearTimeout(pollingTimeout);
@@ -238,20 +254,19 @@ function Content(url, options)
     {
       var params =
       {
-        sessionId: sessionId
+        sessionId: sessionId,
+        reason: reason
       };
 
-      $.jsonRPC.request('terminate', {params: params});
+      $.jsonRPC.request('terminate',
+      {
+        params: params
+      });
 
-      this._setSessionId(null);
+      sessionId = null;
     };
   };
 
-
-  this._setSessionId = function(id)
-  {
-    sessionId = id;
-  }
 
   this._close = function()
   {
@@ -263,7 +278,7 @@ function Content(url, options)
     else
     {
       if(self.onterminate)
-         self.onterminate(new Event('terminate'));
+         self.onterminate();
     }
   }
 
@@ -278,13 +293,22 @@ function Content(url, options)
       var msg = "Requested remote video tag '" + options.localVideoTag
               + "' is not available";
 
-      self._onerror(new Error(msg));
+      var error = new Error(msg);
+          error.code = ERROR_NO_REMOTE_VIDEO_TAG;
+      self._onerror(error);
       return
     };
 
     return remoteVideo;
   }
 
+  /**
+   * Send a command to be executed on the server
+   *
+   * @param {string} type - The command to execute
+   * @param {*} data - Data needed by the command
+   * @param {} callback - Function executed after getting a result or an error
+   */
   this.execute = function(type, data, callback)
   {
     if(sessionId)
@@ -304,7 +328,8 @@ function Content(url, options)
         params: params,
         success: function(response)
         {
-          callback(null, response.result.commandResult);
+          var result = response.result;
+          callback(null, result.commandResult);
         },
         error: function(response)
         {
@@ -316,4 +341,9 @@ function Content(url, options)
     else
       throw new SyntaxError("Connection needs to be open");
   }
-}
+};
+Content.REASON_USER_ENDED_SESSION =
+{
+  code: 1,
+  message: "User ended session"
+};

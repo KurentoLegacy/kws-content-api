@@ -59,12 +59,8 @@ function KwsContent(url, options)
      *
      * @param {Object} response: JsonRPC response
      */
-    function success(response)
+    function success(result)
     {
-      var result = response.result;
-
-      self._setSessionId(result.sessionId);
-
       function success2()
       {
         // Init MediaEvents polling
@@ -75,9 +71,7 @@ function KwsContent(url, options)
         {
           if(options.remoteVideoTag)
           {
-            var url = result.url;
-
-            var remoteVideo = self._setRemoteVideoTag(url);
+            var remoteVideo = self._setRemoteVideoTag(result);
 
             remoteVideo.addEventListener('ended', function()
             {
@@ -90,7 +84,7 @@ function KwsContent(url, options)
           if(self.onremotestream)
           {
             var event = new Event('remotestream');
-                event.stream = result.url;
+                event.stream = result;
 
             self.onremotestream(event)
           }
@@ -101,6 +95,7 @@ function KwsContent(url, options)
            self.onstart(new Event('start'));
       }
 
+      // Init local environment
       success2();
     }
 
@@ -113,7 +108,7 @@ function KwsContent(url, options)
    */
   this.terminate = function()
   {
-    this._terminate();
+    this._terminate(Content.REASON_USER_ENDED_SESSION);
 
     var remoteVideo = document.getElementById(options.remoteVideoTag);
     if(remoteVideo)
