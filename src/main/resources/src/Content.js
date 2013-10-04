@@ -169,8 +169,9 @@ function Content(url, options)
 
         var result = response.result;
 
-        if(result.events)
-          for(var i=0, data; data=result.events[i]; i++)
+        // Content events
+        if(result.contentEvents)
+          for(var i=0, data; data=result.contentEvents[i]; i++)
             if(self.onmediaevent)
             {
               var event = new Event('MediaEvent');
@@ -179,6 +180,29 @@ function Content(url, options)
               self.onmediaevent(event);
             }
 
+        // Control events
+        if(result.controlEvents)
+          for(var i=0, data; data=result.controlEvents[i]; i++)
+          {
+            var type = data.type;
+
+            switch(type)
+            {
+              case "contentComplete":
+                self._close();
+              break;
+
+              case "contentError":
+                _error = data.data;
+                self._close();
+              break;
+
+              default:
+                console.warning("Unknown control event type: "+type);
+            }
+          };
+
+        // Check if we should keep polling events
         if(pollingTimeout != 'stopped')
            pollingTimeout = setTimeout(self._pollMediaEvents, 0);
       },

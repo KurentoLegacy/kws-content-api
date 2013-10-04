@@ -149,7 +149,7 @@ function WebRtcContent(url, options)
               {
                 var msg = "Requested local video tag '"+options.localVideoTag
                         + "' is not available";
-                 self._onerror(new Error(msg));
+                self._onerror(new Error(msg));
                 return
               };
             }
