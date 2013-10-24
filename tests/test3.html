@@ -4,11 +4,7 @@
     <meta charset="utf-8">
     <title>Test 3 - Video, options + filters</title>
 
-    <script src="../src/main/resources/lib/jquery-1.10.2.min.js"></script>
-    <script src="../src/main/resources/lib/jquery.jsonrpc.js"></script>
-
-    <script src="../src/main/resources/src/Content.js"></script>
-    <script src="../src/main/resources/src/KwsContent.js"></script>
+    <script src="../src/main/resources/dist/kws-content-api.js"></script>
 
     <script src="config.js"></script>
   </head>
@@ -62,7 +58,8 @@
           remoteVideoTag: "remoteVideo"
         };
 
-        var conn = new KwsContent(endpoint, options);
+        var KwsContentPlayer = kwsContentApi.KwsContentPlayer;
+        var conn = new KwsContentPlayer(endpoint, options);
 
         conn.onstart = function(event)
         {

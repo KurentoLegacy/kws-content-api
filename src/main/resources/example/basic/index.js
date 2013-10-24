@@ -37,7 +37,7 @@ $(function(event)
   /**
    * Set and enable the terminate button
    *
-   * @param {WebRtcContent} conn: WebRTC streamming connection
+   * @param {KwsWebRtcContent} conn: WebRTC streamming connection
    */
   function setTerminate(conn)
   {
@@ -64,40 +64,40 @@ $(function(event)
     setTerminate(conn);
 
     // Set connection success and error events
-    conn.onstart = function(event)
+    conn.on('start', function(event)
     {
       console.log("Connection started");
 
       // Enable terminate button
       btnTerminate.attr('disabled', false);
-    };
-    conn.onterminate = function(event)
+    });
+    conn.on('terminate', function(event)
     {
       console.log("Connection terminated");
-    };
+    });
 
-    conn.onlocalstream = function(event)
+    conn.on('localstream', function(event)
     {
       console.info("LocalStream set")
-    }
-    conn.onremotestream = function(event)
+    });
+    conn.on('remotestream', function(event)
     {
       console.info("RemoteStream set")
-    }
+    });
 
-    conn.onmediaevent = function(event)
+    conn.on('mediaevent', function(event)
     {
       console.info("MediaEvent: "+JSON.stringify(event.data))
-    }
+    });
 
-    conn.onerror = function(error)
+    conn.on('error', function(error)
     {
       // Enable connect button
       disableInput(false);
 
       // Notify to the user of the error
       console.error(error.message);
-    };
+    });
   }
 
 
@@ -120,9 +120,9 @@ $(function(event)
       var conn = null;
 
       if(chkUseWebRTC.is(":checked"))
-        conn = new WebRtcContent(uri, options);
+        conn = new kwsContentApi.KwsWebRtcContent(uri, options);
       else
-        conn = new KwsContent(uri, options);
+        conn = new kwsContentApi.KwsContentPlayer(uri, options);
 
       console.log("Connection created pointing to '"+uri+"'");
 

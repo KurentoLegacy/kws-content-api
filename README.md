@@ -3,7 +3,7 @@
 Copyright © 2013 Kurento. Licensed under [LGPL License].
 
 kws-content-api
-==========
+===============
 Kurento Content Management API for Web SDK
 
 The kws-content-api project contains the implementation

@@ -12,14 +12,19 @@
  * Lesser General Public License for more details.
  *
  */
-var config =
-{
-  videoUrls:
-  {
-    test1: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test2: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test3: "http://193.147.51.29:8080/content-api-test/playerJsonJack",
-    test4: "http://193.147.51.29:8080/content-api-test/playerJsonZBar"
-  },
-  kwsContentUploader: "http://193.147.51.40:8180/content-api-test/recorder-record-with-redirect"
-};
+
+/**
+ * @module kwsContentApi
+ *
+ * @copyright 2013 Kurento (http://kurento.org/)
+ * @license LGPL
+ */
+
+var KwsContentUploader = require('./KwsContentPlayer');
+var KwsContentUploader = require('./KwsContentUploader');
+var KwsContentUploader = require('./KwsWebRtcContent');
+
+
+exports.KwsContentPlayer   = KwsContentPlayer;
+exports.KwsContentUploader = KwsContentUploader;
+exports.KwsWebRtcContent   = KwsWebRtcContent;

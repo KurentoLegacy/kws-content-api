@@ -13,8 +13,12 @@
  *
  */
 
+
+var Content = require("./Content");
+
+
 /**
- * @constructor KwsContent
+ * @constructor
  *
  * @param {String} url: URL of the WebRTC endpoint server.
  * @param {Object} options: optional configuration parameters
@@ -25,12 +29,14 @@
  *
  * @throws RangeError
  */
-
-function KwsContent(url, options)
+function KwsContentPlayer(url, options)
 {
-  var self = this;
+  options = options || {};
 
   Content.call(this, url, options);
+
+  var self = this;
+
 
   // RPC calls
 
@@ -43,15 +49,6 @@ function KwsContent(url, options)
    */
   function start()
   {
-    var params =
-    {
-      constraints:
-      {
-        audio: options.audio,
-        video: options.video
-      }
-    };
-
     /**
      * Callback when connection is succesful
      *
@@ -61,62 +58,59 @@ function KwsContent(url, options)
      */
     function success(result)
     {
-      function success2()
+      // Remote streams
+      if(self._video.remote)
       {
-        // Init MediaEvents polling
-        self._pollMediaEvents();
+        var url = result.url;
 
-        // Remote streams
-        if(self._video.remote)
+        if(options.remoteVideoTag)
         {
-          if(options.remoteVideoTag)
+          var remoteVideo = self._setRemoteVideoTag(url);
+
+          remoteVideo.addEventListener('ended', function()
           {
-            var remoteVideo = self._setRemoteVideoTag(result);
-
-            remoteVideo.addEventListener('ended', function()
-            {
-              self.terminate();
-            })
-          }
-          else
-            console.warn("No remote video tag available, successful terminate event due to remote end will be no dispatched");
-
-          if(self.onremotestream)
-          {
-            var event = new Event('remotestream');
-                event.stream = result;
-
-            self.onremotestream(event)
-          }
+            self.terminate();
+          })
         }
+        else
+          console.warn("No remote video tag available, successful terminate event due to remote end will be no dispatched");
 
-        // Notify we created the connection successfully
-        if(self.onstart)
-           self.onstart(new Event('start'));
+        self.emit('remotestream', {url: url});
+      };
+
+      // Notify we created the connection successfully
+      self.emit('start');
+    };
+
+
+    var params =
+    {
+      constraints:
+      {
+        audio: options.audio,
+        video: options.video
       }
-
-      // Init local environment
-      success2();
-    }
+    };
 
     self._start(params, success);
   };
 
+  // Mode set to only receive a stream, not send it
+  start();
 
-  /**
-   * Terminate the connection with the WebRTC media server
-   */
-  this.terminate = function()
+
+  function close()
   {
-    this._terminate(Content.REASON_USER_ENDED_SESSION);
-
     var remoteVideo = document.getElementById(options.remoteVideoTag);
     if(remoteVideo)
        remoteVideo.src = '';
-
-    this._close();
   };
 
-  // Mode set to only receive a stream, not send it
-  start();
-}
+  this.on('error',     close);
+  this.on('terminate', close);
+};
+KwsContentPlayer.prototype.__proto__   = Content.prototype;
+KwsContentPlayer.prototype.constructor = KwsContentPlayer;
+
+
+module.exports = KwsContentPlayer;

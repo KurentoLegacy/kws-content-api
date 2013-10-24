@@ -48,21 +48,24 @@ $(function(event) {
 			btnPlayStop.html("Stop");
 			btnPlayStop.attr('disabled', false);
 		};
-		conn.onterminate = function(event) {
+		conn.on('terminate', function(event)
+		{
 			console.log("Connection terminated");
-		};
+		});
 
-		conn.onremotestream = function(event) {
-			console.info("RemoteStream set to " + event.data);
-		}
+		conn.on('remotestream', function(event)
+		{
+			console.info("RemoteStream set to " + JSON.stringify(event));
+		});
 
-		conn.onmediaevent = function(event) {
+		conn.on('mediaevent', function(event)
+		{
 			var mediaEvent = event.data;
 
 			//Do not send two times an event with the same value
-			if(mediaEvent.data == lastEventValue){
+			if(mediaEvent.data == lastEventValue)
 				return;
-			}
+
 			lastEventValue = mediaEvent.data;
 			
 			eventTypeTxt.text("Event type: " + mediaEvent.type);
@@ -120,14 +123,15 @@ $(function(event) {
 
 				console.info(data);
 			}
-		}
+		});
 
-		conn.onerror = function(error) {
+		conn.on('error', function(error)
+		{
 			destroyConnection()
 
 			// Notify to the user of the error
 			console.error(error.message);
-		};
+		});
 	}
 
 	function playVideo() {
@@ -154,7 +158,7 @@ $(function(event) {
 			};
 
 			try {
-				conn = new KwsContent(uri, options);
+				conn = new kwsContentApi.KwsContentPlayer(uri, options);
 
 				console.log("Connection created pointing to '" + uri + "'");
 
