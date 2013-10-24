@@ -147,7 +147,7 @@ function Content(url, options)
 
   this._start = function(params, success)
   {
-    if(sessionId)
+    if(this.sessionId)
       throw new SyntaxError("Connection already open");
 
 
@@ -191,6 +191,9 @@ function Content(url, options)
    */
   function pollMediaEvents()
   {
+    if(!self.sessionId)
+      return;
+
     var params =
     {
       sessionId: self.sessionId
@@ -213,16 +216,16 @@ function Content(url, options)
 
           switch(type)
           {
-            case "contentComplete":
+            case "sessionTerminated":
               self.emit('terminate', Content.REASON_SERVER_ENDED_SESSION);
             break;
 
-            case "contentError":
+            case "sessionError":
               self.emit('error', data.data);
             break;
 
             default:
-              console.warning("Unknown control event type: "+type);
+              console.warn("Unknown control event type: "+type);
           }
         };
 
@@ -250,6 +253,7 @@ function Content(url, options)
       }
     };
 
+    xhr.open('POST', url);
     xhr.send(rpc.encodeJSON('poll', params, function(error, result)
     {
       if(error)
@@ -280,6 +284,7 @@ function Content(url, options)
         reason: reason
       };
 
+      xhr.open('POST', url);
       xhr.send(rpc.encodeJSON('terminate', params));
 
       _sessionId = null;

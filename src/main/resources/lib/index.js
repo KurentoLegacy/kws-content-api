@@ -20,9 +20,9 @@
  * @license LGPL
  */
 
-var KwsContentUploader = require('./KwsContentPlayer');
+var KwsContentPlayer   = require('./KwsContentPlayer');
 var KwsContentUploader = require('./KwsContentUploader');
-var KwsContentUploader = require('./KwsWebRtcContent');
+var KwsWebRtcContent   = require('./KwsWebRtcContent');
 
 
 exports.KwsContentPlayer   = KwsContentPlayer;

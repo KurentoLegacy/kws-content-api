@@ -16,10 +16,10 @@ var config =
 {
   videoUrls:
   {
-    test1: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test2: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test3: "http://193.147.51.29:8080/content-api-test/playerJsonJack",
-    test4: "http://193.147.51.29:8080/content-api-test/playerJsonZBar"
+    test1: "http://193.147.51.40:8180/content-api-test/playerJsonTunnel",
+    test2: "http://193.147.51.40:8180/content-api-test/playerJsonTunnel",
+    test3: "http://193.147.51.40:8180/content-api-test/playerJsonFilter",
+    test4: "http://193.147.51.40:8180/content-api-test/playerJsonEvents"
   },
   kwsContentUploader: "http://193.147.51.40:8180/content-api-test/recorder-record-with-redirect"
 };
