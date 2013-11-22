@@ -2,17 +2,36 @@
   "name": "kws-content-api",
   "version": "0.0.1",
   "description": "Kurento Content Management API for Web SDK",
+  "homepage": "http://www.kurento.com",
+  "license": "LGPL",
+
+  "author": "Kurento <info@kurento.com> (http://kurento.org)",
+  "contributors":
+  [
+    {
+      "name": "Jesús Leganés Combarro 'piranna'",
+      "email": "piranna@gmail.com",
+      "url": "http://pirannafs.blogspot.com.es"
+    }
+  ],
+
   "main": "lib/index.js",
   "scripts":
   {
-    "prepublish": "cd lib && jsdoc -p -r -d ../doc/jsdoc *",
-    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+    "test": "node_modules/.bin/nodeunit test"
   },
+
   "repository":
   {
     "type": "git",
     "url": "https://github.com/Kurento/kws-content-api.git"
   },
+  "bugs":
+  {
+    "url": "https://github.com/Kurento/kws-content-api/issues",
+    "email": "info@kurento.com"
+  },
+
   "keywords":
   [
     "API",
@@ -23,16 +42,6 @@
     "web",
     "WebRTC"
   ],
-  "author": "Kurento <info@kurento.com> (http://kurento.org)",
-  "contributors":
-  [
-    {
-      "name": "Jesús Leganés Combarro 'piranna'",
-      "email": "piranna@gmail.com",
-      "url": "http://pirannafs.blogspot.com.es"
-    }
-  ],
-  "license": "LGPL",
   "dependencies":
   {
     "rpc-builder": "latest",
@@ -43,17 +52,14 @@
     "bower": "latest",
     "grunt": "latest",
     "grunt-cli": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-copy": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-nodeunit": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-browserify": "latest",
-    "jsdoc": "latest"
-  },
-  "license": "LGPL",
-  "homepage": "http://www.kurento.com",
-  "bugs":
-  {
-    "url": "https://github.com/Kurento/kws-content-api/issues",
-    "email": "info@kurento.com"
+    "grunt-jsdoc": "latest",
+    "nock": "latest",
+    "nodeunit": "latest"
   }
 }
