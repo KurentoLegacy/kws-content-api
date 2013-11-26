@@ -12,21 +12,17 @@
  * Lesser General Public License for more details.
  *
  */
+var url  = document.URL;
+var path = myUrl.substring(0, myUrl.lastIndexOf("/") + 1);
+
 var config =
 {
   videoUrls:
   {
-<<<<<<< HEAD
-    test1: "http://193.147.51.40:8180/content-api-test/playerJsonTunnel",
-    test2: "http://193.147.51.40:8180/content-api-test/playerJsonTunnel",
-    test3: "http://193.147.51.40:8180/content-api-test/playerJsonFilter",
-    test4: "http://193.147.51.40:8180/content-api-test/playerJsonEvents"
-=======
-    test1: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test2: "http://193.147.51.29:8080/content-api-test/playerJson",
-    test3: "http://193.147.51.29:8080/content-api-test/playerJsonJack",
-    test4: "http://193.147.51.29:8080/content-api-test/playerJsonZBar"
->>>>>>> 3c5503e... Finally converted style to Node.js
+    test1: myPath+"playerJsonTunnel",
+    test2: myPath+"playerJsonTunnel",
+    test3: myPath+"playerJsonFilter",
+    test4: myPath+"playerJsonEvents"
   },
-  kwsContentUploader: "http://193.147.51.40:8180/content-api-test/recorder-record-with-redirect"
+  kwsContentUploader: myPath+"recorder-record-with-redirect"
 };

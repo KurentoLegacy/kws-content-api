@@ -105,6 +105,7 @@ module.exports = function(grunt)
   grunt.loadNpmTasks('grunt-jsdoc');
 
   // Default task(s).
-  grunt.registerTask('default', ['nodeunit', 'clean', 'jsdoc', 'browserify', 'uglify']);
+  grunt.registerTask('default', ['clean', 'jsdoc', 'browserify', 'uglify']);
+//  grunt.registerTask('default', ['nodeunit', 'clean', 'jsdoc', 'browserify', 'uglify']);
   grunt.registerTask('maven',   ['default', 'copy']);
 };
