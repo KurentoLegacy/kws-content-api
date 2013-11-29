@@ -7,6 +7,28 @@
 
 	<groupId>com.kurento.kws</groupId>
 	<artifactId>kws-content-api</artifactId>
+	<name>kws-content-api</name>
+	<description>
+			Kurento Content Management API for Web SDK
+
+			The kws-content-api project contains the implementation
+			of the Kurento client side Content Management API for web applications.
+	</description>
+	<url>https://github.com/Kurento/kws-content-api</url>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>http://www.gnu.org/licenses/lgpl-2.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>piranna</id>
+			<name>Jesús Leganés Combarro</name>
+		</developer>
+	</developers>
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8 </project.build.sourceEncoding>
@@ -51,16 +73,10 @@
     </plugins>
 	</build>
 
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>Kurento releases repository</name>
-			<url>scp://repository.kurento.com/opt/tomcat/current/data/repositories/internal</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Kurento snapshots repository</name>
-			<url>scp://repository.kurento.com/opt/tomcat/current/data/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<scm>
+		<url>https://github.com/Kurento/${project.artifactId}</url>
+		<connection>scm:git:https://github.com/Kurento/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:Kurento/${project.artifactId}.git</developerConnection>
+		<tag>develop</tag>
+	</scm>
 </project>
