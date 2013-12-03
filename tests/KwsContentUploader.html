@@ -17,7 +17,7 @@
       .hidden { display: none !important;}
     </style>
 
-    <script src="../src/main/resources/dist/kws-content-api.js"></script>
+    <script src="../dist/kws-content-api.js"></script>
 
     <script src="config.js"></script>
   </head>
@@ -49,6 +49,12 @@
         console.log(status.value);
       });
 
+      holder.addEventListener('drop', function(event)
+      {
+        inputStatus.value = event.dataTransfer.files[0].name;
+        console.log(status.value);
+      });
+
       function log(text)
       {
         var textNode = document.createTextNode(text+"\n");
@@ -57,6 +63,9 @@
     </script>
 
     <script>
+      var KwsContentUploader = kwsContentApi.KwsContentUploader;
+      KwsContentUploader.initDragDrop("holder");
+
       function run()
       {
         var endpoint = inputUrl.value;
@@ -67,7 +76,6 @@
           useFormData: false
         };
 
-        var KwsContentUploader = kwsContentApi.KwsContentUploader;
         var uploader = new KwsContentUploader(endpoint, options);
 
         uploader.on('start', function(event)

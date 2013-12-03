@@ -13,16 +13,16 @@
  *
  */
 var url  = document.URL;
-var path = myUrl.substring(0, myUrl.lastIndexOf("/") + 1);
+var path = url.substring(0, url.lastIndexOf("/") + 1);
 
 var config =
 {
   videoUrls:
   {
-    test1: myPath+"playerJsonTunnel",
-    test2: myPath+"playerJsonTunnel",
-    test3: myPath+"playerJsonFilter",
-    test4: myPath+"playerJsonEvents"
+    test1: path+"playerJsonTunnel",
+    test2: path+"playerJsonTunnel",
+    test3: path+"playerJsonFilter",
+    test4: path+"playerJsonEvents"
   },
-  kwsContentUploader: myPath+"recorder-record-with-redirect"
+  kwsContentUploader: path+"recorder-record-with-redirect"
 };
