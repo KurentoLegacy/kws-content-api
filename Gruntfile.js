@@ -24,18 +24,26 @@ module.exports = function(grunt)
     pkg: grunt.file.readJSON('package.json'),
 
     // Plugins configuration
-    clean: [DIST_DIR, 'src', 'doc/jsdoc'],
+    clean:
+    {
+      generated_code: [DIST_DIR, 'src'],
+
+      generated_doc: '<%= jsdoc.all.dest %>',
+
+      browserify_sourcemap:
+      [
+        '<%= browserify.standalone_sourcemap.dest %>',
+        '<%= browserify.require_sourcemap.dest %>'
+      ]
+    },
 
     jsdoc:
     {
-        dist:
-        {
-            src: ['README.md', 'lib/*.js', 'test/*.js'], 
-            options:
-            {
-                destination: 'doc/jsdoc'
-            }
-        }
+      all:
+      {
+        src: ['README.md', 'lib/*.js', 'test/*.js'], 
+        dest: 'doc/jsdoc'
+      }
     },
 
     nodeunit:
@@ -45,6 +53,12 @@ module.exports = function(grunt)
 
     browserify:
     {
+      require:
+      {
+        src:  '<%= pkg.main %>',
+        dest: DIST_DIR+'/<%= pkg.name %>_require.js'
+      },
+
       standalone:
       {
         src:  '<%= pkg.main %>',
@@ -56,14 +70,31 @@ module.exports = function(grunt)
         }
       },
 
-      require:
+      require_sourcemap:
       {
         src:  '<%= pkg.main %>',
-        dest: DIST_DIR+'/<%= pkg.name %>_require.js'
+        dest: DIST_DIR+'/<%= pkg.name %>_require_sourcemap.js',
+
+        options:
+        {
+          debug: true
+        }
+      },
+
+      standalone_sourcemap:
+      {
+        src:  '<%= pkg.main %>',
+        dest: DIST_DIR+'/<%= pkg.name %>_sourcemap.js',
+
+        options:
+        {
+          debug: true,
+          standalone: '<%= pkg.name %>'
+        }
       }
     },
 
-    uglify:
+    minifyify:
     {
       options:
       {
@@ -72,14 +103,16 @@ module.exports = function(grunt)
 
       standalone:
       {
-        src:  DIST_DIR+'/<%= pkg.name %>.js',
-        dest: DIST_DIR+'/<%= pkg.name %>.min.js'
+        src:  '<%= browserify.standalone_sourcemap.dest %>',
+        dest: DIST_DIR+'/<%= pkg.name %>.min.js',
+        map:  DIST_DIR+'/<%= pkg.name %>.map'
       },
 
       require:
       {
-        src:  DIST_DIR+'/<%= pkg.name %>_require.js',
-        dest: DIST_DIR+'/<%= pkg.name %>_require.min.js'
+        src:  '<%= browserify.require_sourcemap.dest %>',
+        dest: DIST_DIR+'/<%= pkg.name %>_require.min.js',
+        map:  DIST_DIR+'/<%= pkg.name %>.map'
       }
     },
 
@@ -87,10 +120,35 @@ module.exports = function(grunt)
     {
       maven:
       {
-        expand: true,
-        cwd: DIST_DIR,
-        src: '*',
-        dest: 'src/main/resources/js/',
+        files:
+        [
+          {
+            expand: true,
+            cwd: DIST_DIR,
+            src: '*',
+            dest: 'src/main/resources/js/',
+          },
+
+          // Basic example
+          {
+            expand: true,
+            cwd: 'example',
+            src: '**',
+            dest: 'src/main/resources/example/',
+          },
+          {
+            expand: true,
+            cwd: DIST_DIR,
+            src: '*',
+            dest: 'src/main/resources/dist/',
+          },
+          {
+            expand: true,
+            cwd: 'old_src',
+            src: '*',
+            dest: 'src/main/resources/old_src/',
+          }
+        ]
       }
     }
   });
@@ -99,13 +157,66 @@ module.exports = function(grunt)
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-jsdoc');
 
-  // Default task(s).
-  grunt.registerTask('default', ['clean', 'jsdoc', 'browserify', 'uglify']);
-//  grunt.registerTask('default', ['nodeunit', 'clean', 'jsdoc', 'browserify', 'uglify']);
+  // Minifyify task
+  var minifyify = require('minifyify');
+  var fs = require('fs');
+  var path = require('path');
+
+  grunt.registerMultiTask('minifyify',
+      'Minify your browserify bundle without losing the sourcemap', function()
+  {
+    var namespace = this.name+'.'+this.target;
+
+    // Fetch configuration data
+    this.requiresConfig(namespace+'.src', namespace+'.dest', namespace+'.map');
+
+    var src  = grunt.config(namespace+'.src');
+    var dest = grunt.config(namespace+'.dest');
+    var map  = grunt.config(namespace+'.map');
+
+    // Options for minifyify & UglifyJS
+    var options = this.options(
+    {
+      map: path.relative(path.dirname(dest), map),
+
+      compressPaths: function(p)
+      {
+        return path.relative(path.dirname(map), p);
+      }
+    });
+
+    // Run minifyify
+    var done = this.async();
+
+    var readStream  = fs.createReadStream(src);
+    var writeStream = fs.createWriteStream(dest);
+
+    readStream.on('open', function()
+    {
+      grunt.log.writeln(JSON.stringify(options));
+      readStream.pipe(minifyify(options, function(error, src, srcMap)
+      {
+        fs.writeFileSync(map, srcMap);
+      })).pipe(writeStream);
+    });
+
+    readStream.on('error', function(error)
+    {
+      done(error);
+    });
+
+    writeStream.on('finish', function()
+    {
+      done();
+    });
+  });
+
+  // Alias tasks
+  grunt.registerTask('default', ['clean', 'jsdoc', 'browserify', 'minifyify', 'clean:browserify_sourcemap']);
+//  grunt.registerTask('default', ['nodeunit', 'clean', 'jsdoc', 'browserify', 'minifyify', 'clean:browserify_sourcemap']);
   grunt.registerTask('maven',   ['default', 'copy']);
 };
