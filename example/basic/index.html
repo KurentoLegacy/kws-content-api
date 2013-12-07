@@ -1,18 +1,20 @@
 <html>
   <head>
-    <script src="../../lib/adapter.js"></script>
-    <script src="../../dist/kws-content-api.js"></script>
+    <script src="lib/jquery-2.0.3.min.js"></script>
 
-    <script src="../../src_old/Console.js"></script>
+    <script src="../../old_src/adapter.js"></script>
+    <script src="../../dist/kws-content-api.min.js"></script>
+
+    <script src="../../old_src/Console.js"></script>
 
     <script src="index.js"></script>
   </head>
   <body>
-    <input id="txtUri" value="http://localhost:8180/content-demo/webrtc" />
+    <input id="txtUri" value="http://localhost:8080/content-demo/webRtcFilterLoopback" size="35"/>
     </br>
     <span>
       <label for="chkUseWebRTC">Use WebRTC?</label>
-      <input id="chkUseWebRTC" type="checkbox" />
+      <input id="chkUseWebRTC" type="checkbox" checked />
     </span>
     </br>
     <button id="btnConnect">Connect</button>
