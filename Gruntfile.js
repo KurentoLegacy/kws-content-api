@@ -126,7 +126,7 @@ module.exports = function(grunt)
             expand: true,
             cwd: DIST_DIR,
             src: '*',
-            dest: 'src/main/resources/js/',
+            dest: 'src/main/resources/META-INF/resources/js/',
           },
 
           // Basic example
@@ -134,19 +134,13 @@ module.exports = function(grunt)
             expand: true,
             cwd: 'example',
             src: '**',
-            dest: 'src/main/resources/example/',
-          },
-          {
-            expand: true,
-            cwd: DIST_DIR,
-            src: '*',
-            dest: 'src/main/resources/dist/',
+            dest: 'src/main/resources/META-INF/resources/example/',
           },
           {
             expand: true,
             cwd: 'old_src',
             src: '*',
-            dest: 'src/main/resources/old_src/',
+            dest: 'src/main/resources/META-INF/resources/old_src/',
           }
         ]
       }
