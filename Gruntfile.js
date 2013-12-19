@@ -127,20 +127,6 @@ module.exports = function(grunt)
             cwd: DIST_DIR,
             src: '*',
             dest: 'src/main/resources/META-INF/resources/js/',
-          },
-
-          // Basic example
-          {
-            expand: true,
-            cwd: 'example',
-            src: '**',
-            dest: 'src/main/resources/META-INF/resources/example/',
-          },
-          {
-            expand: true,
-            cwd: 'old_src',
-            src: '*',
-            dest: 'src/main/resources/META-INF/resources/old_src/',
           }
         ]
       }
