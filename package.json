@@ -34,7 +34,7 @@
     "WebRTC"
   ],
   "dependencies": {
-    "rpc-builder": "latest",
+    "rpc-builder": "0.0.4",
     "xmlhttprequest": "piranna/node-XMLHttpRequest"
   },
   "devDependencies": {
@@ -50,7 +50,6 @@
     "minifyify": "~1.1.2",
     "nock": "~0.27.0",
     "nodeunit": "~0.8.2",
-    "rpc-builder": "0.0.4",
     "browserify": "~3.4.1"
   }
 }
