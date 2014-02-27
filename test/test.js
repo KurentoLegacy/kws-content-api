@@ -16,7 +16,7 @@
 
 var nock       = require('nock');
 var nodeunit   = require('nodeunit');
-var RpcBuilder = require("rpc-builder");
+var RpcBuilder = require("kws-rpc-builder");
 
 var kwsContentApi = require('../lib/index.js');
 

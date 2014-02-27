@@ -1,16 +1,12 @@
 {
   "name": "kws-content-api",
-  "version": "3.0.6-SNAPSHOT",
+  "version": "3.0.7-SNAPSHOT",
   "description": "Kurento Content Management API for Web SDK",
   "homepage": "http://www.kurento.com",
   "license": "LGPL",
-  "author": "Kurento <info@kurento.com> (http://kurento.org)",
+  "author": "Kurento <info@kurento.org> (http://kurento.org)",
   "contributors": [
-    {
-      "name": "Jesús Leganés Combarro 'piranna'",
-      "email": "piranna@gmail.com",
-      "url": "http://pirannafs.blogspot.com.es"
-    }
+    "Jesús Leganés Combarro \"piranna\" <piranna@gmail.com>"
   ],
   "main": "lib/index.js",
   "scripts": {
@@ -34,7 +30,7 @@
     "WebRTC"
   ],
   "dependencies": {
-    "rpc-builder": "0.0.4",
+    "kws-rpc-builder": "~3.0.7",
     "xmlhttprequest": "piranna/node-XMLHttpRequest"
   },
   "devDependencies": {
