@@ -1,6 +1,6 @@
 {
   "name": "kws-content-api",
-  "version": "3.0.7-SNAPSHOT",
+  "version": "4.0.0",
   "description": "Kurento Content Management API for Web SDK",
   "homepage": "http://www.kurento.com",
   "license": "LGPL",
