@@ -31,7 +31,8 @@
   ],
   "dependencies": {
     "kws-rpc-builder": "~4.0.0",
-    "xmlhttprequest": "piranna/node-XMLHttpRequest"
+    "xmlhttprequest": "piranna/node-XMLHttpRequest",
+    "inherits": "^2.0.1"
   },
   "devDependencies": {
     "bower": "~1.2.8",
