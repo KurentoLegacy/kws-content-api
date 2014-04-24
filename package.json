@@ -30,7 +30,7 @@
     "WebRTC"
   ],
   "dependencies": {
-    "kws-rpc-builder": "~4.0.0",
+    "kws-rpc-builder": "~4.2.3",
     "xmlhttprequest": "piranna/node-XMLHttpRequest",
     "inherits": "^2.0.1"
   },
