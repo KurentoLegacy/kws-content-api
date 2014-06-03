@@ -3,7 +3,7 @@
 
 	<groupId>com.kurento.kws</groupId>
 	<artifactId>kws-content-api</artifactId>
-	<version>4.3.0</version>
+	<version>4.3.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>KWS Content API</name>
@@ -37,7 +37,7 @@
 		<url>https://github.com/Kurento/${project.artifactId}</url>
 		<connection>scm:git:https://github.com/Kurento/${project.artifactId}.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:Kurento/${project.artifactId}.git</developerConnection>
-		<tag>kws-content-api-4.3.0</tag>
+		<tag>develop</tag>
 	</scm>
 
 	<mailingLists>
