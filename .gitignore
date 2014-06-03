@@ -8,3 +8,4 @@ target
 dist/
 node_modules/
 src/
+bower.json
