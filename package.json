@@ -1,6 +1,6 @@
 {
   "name": "kws-content-api",
-  "version": "4.3.6",
+  "version": "4.3.7-SNAPSHOT",
   "description": "Kurento Content Management API for Web SDK",
   "homepage": "http://www.kurento.com",
   "license": "LGPL",
@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "inherits": "^2.0.1",
-    "kws-rpc-builder": "4.2.4-SNAPSHOT.6",
+    "kws-rpc-builder": "git://github.com/Kurento/kws-rpc-builder.git#develop",
     "xmlhttprequest": "piranna/node-XMLHttpRequest"
   },
   "devDependencies": {
