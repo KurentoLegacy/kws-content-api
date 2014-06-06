@@ -129,24 +129,12 @@ module.exports = function(grunt)
           'bower register <%= pkg.name %> <%= pkg.repository.url %>'
         ].join('&&')
       }
-    },
-
-    copy:
-    {
-      maven:
-      {
-        expand: true,
-        cwd: DIST_DIR,
-        src: '*',
-        dest: 'src/main/resources/META-INF/resources/js/',
-      }
     }
   });
 
   // Load plugins
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-npm2bower-sync');
   grunt.loadNpmTasks('grunt-shell');
@@ -154,5 +142,4 @@ module.exports = function(grunt)
   // Alias tasks
   grunt.registerTask('default', ['clean', 'jsdoc', 'browserify']);
   grunt.registerTask('bower',   ['sync', 'shell:bower']);
-  grunt.registerTask('maven',   ['default', 'copy']);
 };
