@@ -67,6 +67,7 @@
 	<properties>
 		<version.shell.plugin>1.0-beta-1</version.shell.plugin>
 		<version.release.plugin>2.5</version.release.plugin>
+		<version.deploy.plugin>2.8</version.deploy.plugin>
 		<!-- ************** -->
 		<!-- Build settings -->
 		<!-- ************** -->
@@ -107,6 +108,11 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.deploy.plugin}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
