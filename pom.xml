@@ -90,20 +90,6 @@
 		<!-- maven-enforcer-plugin -->
 		<maven.min.version>3.0.3</maven.min.version>
 		<jdk.min.version>${maven.compiler.source}</jdk.min.version>
-
-		<!-- maven-eclipse-plugin -->
-		<downloadSources>true</downloadSources>
-		<downloadJavadocs>true</downloadJavadocs>
-
-		<!-- maven-pmd-plugin -->
-		<targetJdk>${maven.compiler.target}</targetJdk>
-
-		<!-- maven-release-plugin -->
-		<useReleaseProfile>false</useReleaseProfile>
-		<arguments>-Pkurento-release</arguments>
-
-		<!-- maven-assembly-plugin -->
-		<sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
 	</properties>
 
 	<build>
